@@ -5,13 +5,10 @@
 
 package Cliente;
 
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import pacotes.Primitiva;
 
 /**
  *
@@ -27,6 +24,11 @@ public class Cliente {
 
             InetAddress addr = InetAddress.getByName(ip);
 
+            Primitiva p1 = new Primitiva((short)1,null);
+            byte[] toSend = p1.getBytes();
+
+            DatagramPacket question = new DatagramPacket(toSend, toSend.length, addr, 4545);
+            ds.send(question);
             
 
         } catch (Exception ex) {
