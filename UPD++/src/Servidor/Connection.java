@@ -10,4 +10,6 @@ public class Connection{
     Connection(InetAddress IPAddress){
         this.IPAddress=IPAddress;
     }
+
+
 }
