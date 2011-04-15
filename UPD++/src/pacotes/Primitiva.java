@@ -18,6 +18,11 @@ public class Primitiva {
         data = null;
     }
 
+    Primitiva(short tipo, Object data){
+        this.tipo = tipo;
+        this.data = data;
+    }
+
     public short getTipo(){ return tipo; }
     public Object getData() { return data; }
 
