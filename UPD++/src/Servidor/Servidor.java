@@ -2,13 +2,17 @@ package Servidor;
 
 import java.util.ArrayList;
 
-public class Main {
+public class Servidor {
 
     public static ArrayList<Connection> connectionList;
 
+    Servidor(){
+        
+    }
+
     public static void main(String[] args) {
         connectionList = new ArrayList<Connection>();
-        AcceptConnection accepter = new AcceptConnection(connectionList);
+        Reciever accepter = new Reciever(connectionList);
 
         accepter.start();
     }
