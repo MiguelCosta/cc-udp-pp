@@ -10,5 +10,5 @@ package Cliente;
  * @author goku
  */
 public class Cliente {
-     
+
 }
