@@ -1,17 +1,13 @@
 package Servidor;
 
-import java.net.DatagramSocket;
+import java.net.InetAddress;
 
-public class Connection extends Thread{
+public class Connection{
 
-    private DatagramSocket skt;
+    private InetAddress IPAddress;
 
-    Connection(DatagramSocket skt){
-        this.skt=skt;
+
+    Connection(InetAddress IPAddress){
+        this.IPAddress=IPAddress;
     }
-
-    public void run(){
-        
-    }
-
 }

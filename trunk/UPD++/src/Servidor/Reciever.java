@@ -2,11 +2,11 @@ package Servidor;
 
 import java.util.ArrayList;
 
-public class AcceptConnection extends Thread{
+public class Reciever extends Thread{
 
     public ArrayList<Connection> connectionList;
 
-    AcceptConnection(ArrayList<Connection> connectionList){
+    Reciever(ArrayList<Connection> connectionList){
         this.connectionList=connectionList;
     }
 
