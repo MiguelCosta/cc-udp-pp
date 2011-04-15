@@ -13,12 +13,12 @@ public class Primitiva {
     short tipo;
     Object data;
 
-    Primitiva(){
+    public Primitiva(){
         tipo = -1;
         data = null;
     }
 
-    Primitiva(short tipo, Object data){
+    public Primitiva(short tipo, Object data){
         this.tipo = tipo;
         this.data = data;
     }
