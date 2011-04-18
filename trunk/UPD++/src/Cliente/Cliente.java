@@ -8,12 +8,7 @@ package Cliente;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import pacotes.Primitiva;
 
-/**
- *
- * @author goku
- */
 public class Cliente {
     DatagramSocket ds;
     String ip = "192.168.10.4";
@@ -24,8 +19,8 @@ public class Cliente {
 
             InetAddress addr = InetAddress.getByName(ip);
 
-            ComunicationPacket p1 = new ComunicationPacket(type, info);
-            byte[] toSend = p1.getBytes();
+            ComunicationPacket p1 = new ComunicationPacket(1, null);
+            byte[] toSend = Interpreter.toBytes(p1);
 
             DatagramPacket question = new DatagramPacket(toSend, toSend.length, addr, 4545);
             ds.send(question);
