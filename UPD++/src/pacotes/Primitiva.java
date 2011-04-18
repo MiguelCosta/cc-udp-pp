@@ -28,4 +28,9 @@ public class Primitiva {
 
     public void setTipo(short tipo){ this.tipo = tipo; }
     public void setData(Object data){ this.data = data; }
+
+    public byte[] getBytes(){
+        byte[] b = null ;
+        return b;
+    }
 }
