@@ -2,10 +2,12 @@ package Cliente;
 
 public class ComunicationPacket {
     int type;
-    byte info;
+    byte[] data;
 
-    ComunicationPacket(int type, byte info){
+    ComunicationPacket(int type, byte[] data){
         this.type=type;
-        this.info=info;
+        this.data=data;
     }
+
+
 }

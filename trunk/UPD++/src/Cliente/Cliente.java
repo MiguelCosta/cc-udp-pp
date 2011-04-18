@@ -24,7 +24,7 @@ public class Cliente {
 
             InetAddress addr = InetAddress.getByName(ip);
 
-            Primitiva p1 = new Primitiva((short)1,null);
+            ComunicationPacket p1 = new ComunicationPacket(type, info);
             byte[] toSend = p1.getBytes();
 
             DatagramPacket question = new DatagramPacket(toSend, toSend.length, addr, 4545);
