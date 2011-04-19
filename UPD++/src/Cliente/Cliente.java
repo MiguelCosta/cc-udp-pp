@@ -18,9 +18,9 @@ public class Cliente {
         InetAddress addr = InetAddress.getByName(ip);
 
         String stringAEvniar = "ISto e um teste";
-
         ComunicationPacket p1 = new ComunicationPacket(5, stringAEvniar.getBytes());
-        byte[] toSend = Interpreter.toBytes(p1);
+
+        byte[] toSend = Interpreter.objectToBytes(p1);
 
         DatagramPacket question = new DatagramPacket(toSend, toSend.length, addr, 4545);
         ds.send(question);
