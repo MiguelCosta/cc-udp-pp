@@ -1,33 +1,28 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package Cliente;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class Cliente {
-    DatagramSocket ds;
-    String ip = "192.168.10.4";
 
-    Cliente() {
-        try {
-            ds = new DatagramSocket();
+    private static DatagramSocket ds;
+    private static String ip = "192.168.10.4";
 
-            InetAddress addr = InetAddress.getByName(ip);
+    public static void main(String[] args) throws SocketException, UnknownHostException, IOException {
+        ds = new DatagramSocket();
 
-            ComunicationPacket p1 = new ComunicationPacket(1, null);
-            byte[] toSend = Interpreter.toBytes(p1);
+        InetAddress addr = InetAddress.getByName(ip);
 
-            DatagramPacket question = new DatagramPacket(toSend, toSend.length, addr, 4545);
-            ds.send(question);
-            
+        String stringAEvniar = "ISto e um teste";
 
-        } catch (Exception ex) {
-            System.out.println("(Exception Cliente(run)):" + ex.getMessage());
-        }
+        ComunicationPacket p1 = new ComunicationPacket(5, stringAEvniar.getBytes());
+        byte[] toSend = Interpreter.toBytes(p1);
+
+        DatagramPacket question = new DatagramPacket(toSend, toSend.length, addr, 4545);
+        ds.send(question);
     }
 }
