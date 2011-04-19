@@ -1,13 +1,13 @@
 package Servidor;
 
-import java.util.ArrayList;
+import java.net.DatagramSocket;
 
 public class Reciever extends Thread{
 
-    public ArrayList<Connection> connectionList;
+    private DatagramSocket socket;
 
-    Reciever(ArrayList<Connection> connectionList){
-        this.connectionList=connectionList;
+    Reciever(DatagramSocket socket){
+        this.socket=socket;
     }
 
     public void Run(){

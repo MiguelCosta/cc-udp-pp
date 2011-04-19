@@ -1,9 +1,12 @@
 package Servidor;
 
+import java.net.DatagramSocket;
+
 public class Sender extends Thread{
 
+    private DatagramSocket socket;
 
-    public void run(){
-        
+    Sender(DatagramSocket socket){
+        this.socket = socket;
     }
 }
