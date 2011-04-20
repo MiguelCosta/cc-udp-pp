@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public class Cliente {
+public class MainCliente {
 
     private static DatagramSocket socket;
     private static String ip;
@@ -15,17 +15,19 @@ public class Cliente {
     public static void main(String[] args) throws SocketException, UnknownHostException, IOException {
         /*Inicializações*/
         socket = new DatagramSocket();
-        ip = "192.168.10.4";
+        ip = "192.168.10.5";
 
         /*Atribuir ip do servidor destino*/
         InetAddress addr = InetAddress.getByName(ip);
 
-        String stringAEvniar = "ISto e um teste";
-        ComunicationPacket p1 = new ComunicationPacket(5, stringAEvniar.getBytes());
+        String stringAEvniar = "Isto e um teste";
+        ComunicationPacketCliente p1 = new ComunicationPacketCliente(1, stringAEvniar.getBytes());
 
-        byte[] toSend = Interpreter.objectToBytes(p1);
+        byte[] toSend = InterpreterCliente.objectToBytes(p1);
 
         DatagramPacket question = new DatagramPacket(toSend, toSend.length, addr, 4545);
         socket.send(question);
+
+        System.out.println("Enviando");
     }
 }

@@ -2,7 +2,7 @@ package Servidor;
 
 import java.util.ArrayList;
 
-public class Servidor {
+public class MainServidor {
 
     public static ArrayList<Connection> connectionList;
 
