@@ -1,8 +1,8 @@
-package Cliente;
+package pacotes;
 
 import java.io.Serializable;
 
-public class ComunicationPacketCliente implements Serializable{
+public class ComunicationPacket implements Serializable{
 
     /*
      * Indentifica a primitiva de comunicação
@@ -12,15 +12,16 @@ public class ComunicationPacketCliente implements Serializable{
      * 4-Request
      * 5-DataTransfer
      */
-    int type;
+    private int type;
     
     /*Transporte de informação*/
-    byte[] data;
+    private byte[] data;
 
-    ComunicationPacketCliente(int type, byte[] data){
+    public ComunicationPacket(int type, byte[] data){
         this.type=type;
         this.data=data;
     }
 
-
+    public int getType() { return type; }
+    public byte[] getData() { return data; }
 }
