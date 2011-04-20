@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import pacotes.ComunicationPacket;
 
 public class MainCliente {
 
@@ -21,7 +22,7 @@ public class MainCliente {
         InetAddress addr = InetAddress.getByName(ip);
 
         String stringAEvniar = "Isto e um teste";
-        ComunicationPacketCliente p1 = new ComunicationPacketCliente(1, stringAEvniar.getBytes());
+        ComunicationPacket p1 = new ComunicationPacket(1, stringAEvniar.getBytes());
 
         byte[] toSend = InterpreterCliente.objectToBytes(p1);
 
