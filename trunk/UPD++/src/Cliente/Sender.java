@@ -46,8 +46,9 @@ public class Sender extends Thread{
             wait();
     }
 
-    public void desPausa(){
+    public synchronized void desPausa(){
         pausa = false;
+        notifyAll();
     }
 
 }
