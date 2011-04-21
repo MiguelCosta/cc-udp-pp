@@ -55,9 +55,12 @@ public class ConnectionAccepter extends Thread{
     }
 
     public synchronized static void eliminaConnection(int c){
-        for (Connection co : connectionList)
-            if (co.getIndice() == c)
-                connectionList.remove(co);
+        boolean found = false;
+        for (int i = 0 ; i<connectionList.size() && !found; i++)
+            if (connectionList.get(i).getIndice() == c){
+                connectionList.remove(connectionList.get(i));
+                found  = true;
+            }
     }
 
 }
