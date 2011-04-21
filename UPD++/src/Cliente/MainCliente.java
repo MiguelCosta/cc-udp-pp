@@ -26,7 +26,7 @@ public class MainCliente {
                     + "sjdnfisdujfnsudinfisudfnisudfnsidunfsdiufnsdiufnsdiufnsdf"
                     + "jfsndfuisndfiusdnfiusndfiusdfnisdufnsidufnsidufnsdiufnsi007";
 
-            s = new Sender(socket, addr, 4545, texto, 256, 2);
+            s = new Sender(socket, addr, 4545, texto, 128, 4); //min 128
             s.start();
             r = new Reciever(socket);
             r.start();
