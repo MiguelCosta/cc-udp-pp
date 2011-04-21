@@ -2,15 +2,12 @@ package Cliente;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import pacotes.ComunicationPacket;
 
 public class Sender extends Thread{
 
     private DatagramSocket socket;
-    private InetAddress addr;
-    private int port;
     private boolean pausa;
     private ArrayList<DatagramPacket> pacotesEnviar;
     private Object toSend;
@@ -18,11 +15,8 @@ public class Sender extends Thread{
     private int tamanhoJanela;
     private int numPacotes;
 
-    public Sender(DatagramSocket socket, InetAddress addr, int port, Object toSend, 
-            int lengthPacotes, int tamanhoJanela){
+    public Sender(DatagramSocket socket, Object toSend, int lengthPacotes, int tamanhoJanela){
         this.socket = socket;
-        this.addr =addr;
-        this.port = port;
         pausa = false;
         pacotesEnviar = new ArrayList<DatagramPacket>();
         this.toSend = toSend;
@@ -34,9 +28,10 @@ public class Sender extends Thread{
     @Override
     public void run(){
         try {
-            ComunicationPacket p1 = new ComunicationPacket( (char) 1, InterpreterCliente.objectToBytes(""));
+            ComunicationPacket p1 = new ComunicationPacket( (char) 1, null);
             byte[] toSend1 = InterpreterCliente.objectToBytes(p1);
-            DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length, addr, port);
+            DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length,
+                    socket.getInetAddress(), socket.getPort());
 
             socket.send(package1);
 
@@ -48,9 +43,10 @@ public class Sender extends Thread{
 
             enviaPacotes();
 
-            p1 = new ComunicationPacket( (char) 2, InterpreterCliente.objectToBytes(""));
+            p1 = new ComunicationPacket( (char) 2, null);
             toSend1 = InterpreterCliente.objectToBytes(p1);
-            package1 = new DatagramPacket(toSend1, toSend1.length, addr, port);
+            package1 = new DatagramPacket(toSend1, toSend1.length, socket.getInetAddress(),
+                    socket.getPort());
             
             pausa();
 
@@ -61,11 +57,15 @@ public class Sender extends Thread{
 
 
 
-    private synchronized void pausa() throws InterruptedException{
-        pausa = true;
-        /* Ciclo para evitar que a thread acorde sem receber nada */
-        while(pausa)
-            wait();
+    private synchronized void pausa() {
+        try {
+            pausa = true;
+            /* Ciclo para evitar que a thread acorde sem receber nada */
+            while (pausa)
+                wait();
+        } catch (InterruptedException ex) {
+            System.out.println("ERRO (senderCliente.pausa): " + ex.getMessage());
+        }
     }
 
     public synchronized void desPausa(){
@@ -85,7 +85,8 @@ public class Sender extends Thread{
             if ( j == lengthPacotes-1){
                 ComunicationPacket aux = new ComunicationPacket( (char) 5, buffer);
                 byte[] toSendCP = InterpreterCliente.objectToBytes(aux);
-                DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length, addr, port);
+                DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
+                        socket.getInetAddress(), socket.getPort());
 
                 pacotesEnviar.add(pacote);
                 j = 0;
@@ -96,7 +97,8 @@ public class Sender extends Thread{
             if ( j == lengthPacotes-1){
                 ComunicationPacket aux = new ComunicationPacket( (char) 5, buffer);
                 byte[] toSendCP = InterpreterCliente.objectToBytes(aux);
-                DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length, addr, port);
+                DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length, 
+                        socket.getInetAddress(), socket.getPort());
 
                 pacotesEnviar.add(pacote);
             }

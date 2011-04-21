@@ -10,7 +10,8 @@ public class Reciever extends Thread{
         this.socket=socket;
     }
 
-    public void Run(){
+    @Override
+    public void run(){
         
     }
 

@@ -21,7 +21,7 @@ public class MainCliente {
             /*Atribuir ip do servidor destino*/
             InetAddress addr = InetAddress.getByName(ip);
 
-            s = new Sender(socket, addr, 4545, "Olá, tudo bem?", 256, 8);
+            s = new Sender(socket, "Olá, tudo bem?", 256, 8);
             s.start();
             Reciever r = new Reciever(socket);
             r.start();
