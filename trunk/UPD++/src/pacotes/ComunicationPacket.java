@@ -12,12 +12,13 @@ public class ComunicationPacket implements Serializable{
      * 4-Request
      * 5-DataTransfer
      */
-    private int type;
+    private char type; /* por questoes de optimizacao, char sao menos 3 bytes do  que int,
+                         alias so eram nessessarios 3 bits */
     
     /*Transporte de informação*/
     private byte[] data;
 
-    public ComunicationPacket(int type, byte[] data){
+    public ComunicationPacket(char type, byte[] data){
         this.type=type;
         this.data=data;
     }
