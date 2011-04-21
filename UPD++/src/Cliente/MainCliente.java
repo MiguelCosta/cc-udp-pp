@@ -28,6 +28,5 @@ public class MainCliente {
 
     public synchronized static void desPausa(){
         s.desPausa();
-        s.notifyAll();
     }
 }
