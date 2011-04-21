@@ -1,18 +1,16 @@
 package Cliente;
 
-import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class MainCliente {
 
     private static DatagramSocket socket;
     private static String ip;
     private static Sender s;
+    private static Reciever r;
 
-    public static void main(String[] args) throws SocketException, UnknownHostException, IOException {
+    public static void main(String[] args) {
         try {
             /*Inicializações*/
             socket = new DatagramSocket();
@@ -21,16 +19,24 @@ public class MainCliente {
             /*Atribuir ip do servidor destino*/
             InetAddress addr = InetAddress.getByName(ip);
 
-            s = new Sender(socket, "Olá, tudo bem?", 256, 8);
+            String texto = "uhfisudfhisufhsdfhiusdhfisdhfisudfhsdiuhfsidufhsdiuh"
+                    + "fuhdsfiuhsdfiuhsdfiuhsdfishdfsdfhsidufhsdiufhsdifuhsdiufhsdi"
+                    + "ufdmfsdopfspdofmsdpofmsdopfmsdpofspdofmsdpofmsdpofmsdpofmsdpof"
+                    + "sdfosdofmsdfomsdfopsdfposdmfosdmfsodpmfsdomfpsdofmsdomfspdofmsdfnsdoifn"
+                    + "sjdnfisdujfnsudinfisudfnisudfnsidunfsdiufnsdiufnsdiufnsdf"
+                    + "jfsndfuisndfiusdnfiusndfiusdfnisdufnsidufnsidufnsdiufnsi007";
+
+            s = new Sender(socket, addr, 4545, texto, 256, 2);
             s.start();
-            Reciever r = new Reciever(socket);
+            r = new Reciever(socket);
             r.start();
 
             r.join();
             s.join();
 
+            System.out.println("fechar ligacao");
             socket.close();
-        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
             System.out.println("ERRO (senderCliente.run): " + ex.getMessage());
         }
     }

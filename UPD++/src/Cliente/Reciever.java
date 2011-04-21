@@ -5,7 +5,8 @@ import java.net.DatagramSocket;
 import pacotes.ComunicationPacket;
 
 public class Reciever extends Thread{
-    DatagramSocket socket;
+    private DatagramSocket socket;
+    private boolean finish = false;
 
     public Reciever(DatagramSocket socket){
         this.socket = socket;
@@ -14,7 +15,7 @@ public class Reciever extends Thread{
     @Override
     public void run(){
         try {
-            while (true) {
+            while (!finish) {
                 byte[] buffer = new byte[256];
                 DatagramPacket newPkt = new DatagramPacket(buffer, buffer.length);
                 socket.receive(newPkt);
@@ -36,8 +37,10 @@ public class Reciever extends Thread{
                     System.out.println("Coneccçao terminada");
                     MainCliente.desPausa();
                     socket.disconnect();
+                    finish = true;
                 }
             }
+            System.out.println("Receiver finish");
         } catch (Exception ex) {
             System.out.println("ERRO (ReceiverCliente.run): " + ex.getMessage());
         }

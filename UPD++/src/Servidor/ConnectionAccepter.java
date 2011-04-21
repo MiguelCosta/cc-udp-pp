@@ -32,7 +32,8 @@ public class ConnectionAccepter extends Thread{
                 
                 if(ComPkt.getType()==1){
                     System.out.println("The client " + newPkt.getAddress() + " requested connection.\n");
-                    Connection newCnt = new Connection(i,newSkt);
+                    System.out.println("" + newPkt.getAddress() + " " + newPkt.getPort());
+                    Connection newCnt = new Connection(i,newSkt,newPkt.getAddress(),newPkt.getPort());
 
                     /*Verificar se já existe uma ligação com o mesmo cliente-através do IP*/
                         // E se existir ? Nao pode ter 2 ligacoes ??
@@ -47,6 +48,12 @@ public class ConnectionAccepter extends Thread{
                     DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, newPkt.getAddress(), newPkt.getPort());
 
                     newSkt.send(package1);
+
+                    System.out.println("servidor mandando conexao com cliente");
+                    newCnt.main();
+                }
+                if(ComPkt.getType()==5){
+                    System.out.println("Package received no lugar errado");
                 }
             } 
         } catch (IOException ex) {
@@ -58,10 +65,9 @@ public class ConnectionAccepter extends Thread{
         boolean found = false;
         for (int i = 0 ; i<connectionList.size() && !found; i++)
             if (connectionList.get(i).getIndice() == c){
-                connectionList.get(i).getSocket().close();
                 connectionList.remove(connectionList.get(i));
                 found  = true;
             }
+        System.out.println("Ligacao terminada");
     }
-
 }
