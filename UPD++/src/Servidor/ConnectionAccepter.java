@@ -32,7 +32,7 @@ public class ConnectionAccepter extends Thread{
                 
                 if(ComPkt.getType()==1){
                     System.out.println("The client " + newPkt.getAddress() + " requested connection.\n");
-                    Connection newCnt = new Connection(i,newPkt.getAddress(), newSkt);
+                    Connection newCnt = new Connection(i,newSkt);
 
                     /*Verificar se já existe uma ligação com o mesmo cliente-através do IP*/
                         // E se existir ? Nao pode ter 2 ligacoes ??
@@ -58,6 +58,7 @@ public class ConnectionAccepter extends Thread{
         boolean found = false;
         for (int i = 0 ; i<connectionList.size() && !found; i++)
             if (connectionList.get(i).getIndice() == c){
+                connectionList.get(i).getSocket().close();
                 connectionList.remove(connectionList.get(i));
                 found  = true;
             }
