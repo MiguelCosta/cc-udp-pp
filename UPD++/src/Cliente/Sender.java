@@ -110,8 +110,8 @@ public class Sender extends Thread{
     private synchronized void enviaPacotes(){
         try {
             for (DatagramPacket dp : pacotesEnviar){
-                if (numPacotes >= tamanhoJanela)
-                    pausa();
+                while ( numPacotes >= tamanhoJanela ) /* esta um ciclo em vez de */
+                    pausa();       /* um if, porque se receber um 1, acorda o an mesma, mas nao dec o numPacotes*/
                 socket.send(dp);
                 numPacotes++;
             }
