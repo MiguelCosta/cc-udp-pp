@@ -1,6 +1,7 @@
 package Servidor;
 
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class Connection{
 
@@ -11,14 +12,14 @@ public class Connection{
     private static Sender sender;
 
 
-    Connection(int i,DatagramSocket socket){
+    Connection(int i,DatagramSocket socket, InetAddress addr, int port){
         indice = i;
         this.socket=socket;
         reciever=new Reciever(socket);
-        sender= new Sender(socket);
+        sender= new Sender(socket,addr,port);
     }
 
-    public static void main(){
+    public void main(){
         try {
             reciever.start();
             sender.start();
