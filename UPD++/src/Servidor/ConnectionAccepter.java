@@ -40,7 +40,7 @@ public class ConnectionAccepter extends Thread{
                 Object o = InterpreterServidor.toObject(ComPkt.getData());
                 System.out.println("A mensagem recebida foi:\n" + o);
 
-                ComunicationPacket p1 = new ComunicationPacket(3, InterpreterServidor.toBytes(""));
+                ComunicationPacket p1 = new ComunicationPacket((char)3, InterpreterServidor.toBytes(""));
                 byte[] toSend1 = InterpreterServidor.toBytes(p1);
                 DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length, newPkt.getAddress(), newPkt.getPort());
 
