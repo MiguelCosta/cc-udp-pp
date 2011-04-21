@@ -17,9 +17,9 @@ public class ConnectionAccepter extends Thread{
 
     @Override
     public void run(){
-        while(true){
-            try {
-                DatagramSocket newSkt = new DatagramSocket(4545);
+        try {
+            DatagramSocket newSkt = new DatagramSocket(4545);
+            while(true){
                 byte[] buffer = new byte[256];
                 DatagramPacket newPkt = new DatagramPacket(buffer, buffer.length);
                 newSkt.receive(newPkt);
@@ -36,10 +36,18 @@ public class ConnectionAccepter extends Thread{
                     /*Adicionar a Ligacao à lista de ligações*/
                     /*Enviar confirmação de ligacão e mostrar uma frase na consola a indicar que já se ligou*/
                 }
-            } catch (IOException ex) {
-                System.out.println("ERRO (ConnectionAccepterRun): " + ex.getMessage());
-            }
+                
+                Object o = InterpreterServidor.toObject(ComPkt.getData());
+                System.out.println("A mensagem recebida foi:\n" + o);
 
+                ComunicationPacket p1 = new ComunicationPacket(3, InterpreterServidor.toBytes(""));
+                byte[] toSend1 = InterpreterServidor.toBytes(p1);
+                DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length, newPkt.getAddress(), newPkt.getPort());
+
+                newSkt.send(package1);
+            } 
+        } catch (IOException ex) {
+            System.out.println("ERRO (ConnectionAccepterRun): " + ex.getMessage());
         }
     }
 
