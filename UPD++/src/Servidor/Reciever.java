@@ -11,20 +11,12 @@ public class Reciever extends Thread{
     private boolean finish;
     private byte[] objecto;
     private int indice;
-    private int[] erros_teste;
-    private int erros_pacotesrecebidos;
 
     Reciever(DatagramSocket socket){
         this.socket=socket;
         finish = false;
         objecto = new byte[4096];
         indice = 0;
-        erros_teste = new int[4];
-        erros_teste[0] = 2;
-        erros_teste[1] = 6;
-        erros_teste[2] = 8;
-        erros_teste[3] = 9;
-        erros_pacotesrecebidos = 0;
     }
 
     @Override
@@ -41,15 +33,9 @@ public class Reciever extends Thread{
                 if(ComPkt.getType()==5){
                     System.out.println("Package received");
                     //System.out.println("Recebido: " + InterpreterServidor.toObject(ComPkt.getData()));
-                    erros_pacotesrecebidos++;
 
-                    boolean found = false;
-                    for (int i = 0 ; i < erros_teste.length && !found; i++ )
-                        if (erros_pacotesrecebidos == erros_teste[i]){
-                            Connection.aumentaNumConfirmacoes();
-                            adicionaAoObjecto(ComPkt.getData());
-                            found = true;
-                        }
+                    Connection.aumentaNumConfirmacoes();
+                    adicionaAoObjecto(ComPkt.getData());
                 }
 
                 if(ComPkt.getType()==2){
