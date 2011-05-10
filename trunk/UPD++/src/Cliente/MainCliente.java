@@ -14,7 +14,7 @@ public class MainCliente {
         try {
             /*Inicializações*/
             socket = new DatagramSocket();
-            ip = "192.168.1.67";
+            ip = "192.168.10.8";
 
             /*Atribuir ip do servidor destino*/
             InetAddress addr = InetAddress.getByName(ip);
