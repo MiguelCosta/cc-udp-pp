@@ -1,7 +1,6 @@
 package Cliente;
 
 import Interfaces.InterfaceCliente;
-import java.io.File;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -28,12 +27,11 @@ public class MainCliente {
     public static void sender(String ip, int port, int tamanhoJanela, String toSend,
             int lengthPacotes){
         try {
-            File f = new File(toSend);
 
             /*Atribuir ip do servidor destino*/
             InetAddress addr = InetAddress.getByName(ip);
 
-            s = new Sender(socket, addr, port, tamanhoJanela, f, lengthPacotes); //min 128
+            s = new Sender(socket, addr, port, tamanhoJanela, toSend, lengthPacotes); //min 128
             s.start();
 
             r = new Reciever(socket);

@@ -4,6 +4,7 @@ import Interfaces.InterfaceCliente;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import pacotes.ComunicationPacket;
+import pacotes.Interpreter;
 
 public class Reciever extends Thread{
     private DatagramSocket socket;
@@ -21,7 +22,7 @@ public class Reciever extends Thread{
                 DatagramPacket newPkt = new DatagramPacket(buffer, buffer.length);
                 socket.receive(newPkt);
 
-                ComunicationPacket comPkt = (ComunicationPacket) InterpreterCliente.bytesToObject(newPkt.getData());
+                ComunicationPacket comPkt = (ComunicationPacket) Interpreter.bytesToObject(newPkt.getData());
 
                 switch (comPkt.getType()) {
                     case 1 :

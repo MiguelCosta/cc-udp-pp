@@ -19,8 +19,7 @@ public class Connection{
         sender= new Sender(socket,addr,port);
     }
 
-    public void main(){
-        try {
+    public void main() throws InterruptedException{
             reciever.start();
             sender.start();
 
@@ -28,9 +27,6 @@ public class Connection{
             sender.join();
             
             ConnectionAccepter.eliminaConnection(indice);
-        } catch (InterruptedException ex) {
-            System.out.println("ERRO (Connection.main): " + ex.getMessage());
-        }
     }
 
     public int getIndice(){
