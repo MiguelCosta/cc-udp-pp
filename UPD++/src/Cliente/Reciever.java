@@ -1,5 +1,6 @@
 package Cliente;
 
+import Interfaces.InterfaceCliente;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import pacotes.ComunicationPacket;
@@ -20,25 +21,29 @@ public class Reciever extends Thread{
                 DatagramPacket newPkt = new DatagramPacket(buffer, buffer.length);
                 socket.receive(newPkt);
 
-                ComunicationPacket ComPkt = (ComunicationPacket) InterpreterCliente.bytesToObject(newPkt.getData());
+                ComunicationPacket comPkt = (ComunicationPacket) InterpreterCliente.bytesToObject(newPkt.getData());
 
-                if(ComPkt.getType()==1){
-                    System.out.println("Conecção Estabelecida");
-                    MainCliente.desPausa();
+                switch (comPkt.getType()) {
+                    case 1 :
+                        System.out.println("Conecção Estabelecida");
+                        MainCliente.desPausa();
+                        break;
+                    case 2 :
+                        System.out.println("Coneccçao terminada");
+                        MainCliente.desPausa();
+                        socket.disconnect();
+                        finish = true;
+                        break;
+                    case 3 :
+                        System.out.println("Confirmation Received : " +
+                                comPkt.getNumber());
+                        MainCliente.decrementaNumPacotes();
+                        MainCliente.desPausa();
+                        break;
+                    default :
+                        System.out.println("Pacote estranho recebido");
                 }
-
-                if(ComPkt.getType()==3){
-                    System.out.println("Confirmation Received");
-                    MainCliente.decrementaNumPacotes();
-                    MainCliente.desPausa();
-                }
-
-                if(ComPkt.getType()==2){
-                    System.out.println("Coneccçao terminada");
-                    MainCliente.desPausa();
-                    socket.disconnect();
-                    finish = true;
-                }
+                InterfaceCliente.update();
             }
             System.out.println("Receiver finish");
         } catch (Exception ex) {

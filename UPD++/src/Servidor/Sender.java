@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import pacotes.ComunicationPacket;
 
 public class Sender extends Thread{
@@ -11,7 +12,8 @@ public class Sender extends Thread{
     private DatagramSocket socket;
     private InetAddress addr;
     private int port;
-    private int numConfirmacoes;
+    //private int numConfirmacoes;
+    private ArrayList<Integer> confirmacoes;
     private boolean pausa;
     private boolean finish;
 
@@ -19,7 +21,8 @@ public class Sender extends Thread{
         this.socket = socket;
         this.addr = addr;
         this.port = port;
-        numConfirmacoes = 0;
+        //numConfirmacoes = 0;
+        confirmacoes = new ArrayList<Integer>();
         pausa = false;
         finish = false;
     }
@@ -29,7 +32,7 @@ public class Sender extends Thread{
         try {
             sendConfirmacoes();
 
-            ComunicationPacket p = new ComunicationPacket((char) 2, new byte[1]);
+            ComunicationPacket p = new ComunicationPacket((char) 2,-1, new byte[1]);
             byte[] toSend = InterpreterServidor.toBytes(p);
             DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
 
@@ -41,8 +44,9 @@ public class Sender extends Thread{
         }
     }
 
-    public synchronized void aumentaNumConfirmacoes(){
-        numConfirmacoes++;
+    public synchronized void aumentaNumConfirmacoes(int number){
+        //numConfirmacoes++;
+        confirmacoes.add(number);
         desPausa();
     }
 
@@ -71,17 +75,19 @@ public class Sender extends Thread{
         finish = false;
         try {
             while(!finish){
-                while (numConfirmacoes == 0 && !finish)
+                //while (numConfirmacoes == 0 && !finish)
+                while (confirmacoes.isEmpty() && !finish)
                     pausa();
                 if (!finish){
-                    ComunicationPacket p = new ComunicationPacket((char) 3, null);
+                    ComunicationPacket p = new ComunicationPacket((char) 3, confirmacoes.get(0), null);
                     byte[] toSend = InterpreterServidor.toBytes(p);
                     DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
 
                     socket.send(package1);
                     System.out.println("confirmacao enviada");
 
-                    numConfirmacoes--;
+                    //numConfirmacoes--;
+                    confirmacoes.remove(0);
                 }
             }
         } catch (IOException ex) {

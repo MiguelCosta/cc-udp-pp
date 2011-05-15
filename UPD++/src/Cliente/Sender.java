@@ -14,37 +14,27 @@ public class Sender extends Thread{
     private int port;
     private boolean pausa;
     private ArrayList<DatagramPacket> pacotesEnviar;
-    private Object toSend;
-    private int lengthPacotes;
     private int tamanhoJanela;
     private int numPacotes;
 
-    public Sender(DatagramSocket socket, InetAddress addr, int port,Object toSend,
-            int lengthPacotes, int tamanhoJanela){
+    public Sender(DatagramSocket socket, InetAddress addr, int port, int tamanhoJanela,
+        Object toSend, int lengthPacotes){
         this.socket = socket;
         this.addr = addr;
         this.port = port;
         pausa = false;
         pacotesEnviar = new ArrayList<DatagramPacket>();
-        this.toSend = toSend;
-        this.lengthPacotes = lengthPacotes;
         this.tamanhoJanela = tamanhoJanela;
         numPacotes = 0;
+
+        criaPacotes(toSend, lengthPacotes);
     }
 
     @Override
     public void run(){
         try {
             enviaRequest();
-
-            /* O servidor neste momento so recebe pacotes de 256 byte, o excesso é ignorado, entao dividir
-                o nosso objecto que queremos enviar em vários pacotes de 256 */
-            byte[] bytes = InterpreterCliente.objectToBytes(toSend);
-
-            System.out.println(""+bytes + " : " + bytes.length);
-
-            criaPacotes(bytes);
-            
+           
             System.out.println("enviando data...");
 
             enviaPacotes();
@@ -53,7 +43,7 @@ public class Sender extends Thread{
 
             enviaTermination();
 
-            System.out.printf("sender finish");
+            System.out.println("sender finish");
         } catch (Exception ex) {
             System.out.println("ERRO (senderCliente.run): " + ex.getMessage());
         }
@@ -78,17 +68,20 @@ public class Sender extends Thread{
     }
 
     public synchronized void decrementaNumPAcotes(){
-        numPacotes--;
+        numPacotes--; 
     }
 
-    private void criaPacotes(byte[] objecto){
-        byte[] buffer = new byte[lengthPacotes-91]; /* 1 byte para o char (tipo pacote)*/
-        int j = 0;
+    private void criaPacotes(Object toSend, int lengthPacotes){
+
+        byte[] objecto = InterpreterCliente.objectToBytes(toSend);
+
+        byte[] buffer = new byte[lengthPacotes-104]; /* 1 byte para o char (tipo pacote)*/
+        int j = 0, number = 0;
         for ( int i = 0 ; i < objecto.length ; i++ , j++ ){
             buffer[j] = objecto[i];
-            if ( j == lengthPacotes-92){
+            if ( j == lengthPacotes-105){
                 buffer[j]='\0';
-                ComunicationPacket aux = new ComunicationPacket((char) 5, buffer);
+                ComunicationPacket aux = new ComunicationPacket((char) 5, number++, buffer);
                 byte[] toSendCP = InterpreterCliente.objectToBytes(aux);
                 DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                         addr, port);
@@ -100,7 +93,7 @@ public class Sender extends Thread{
 
         if (j != 0) {
             buffer[j]='\0';
-            ComunicationPacket aux = new ComunicationPacket((char) 5, buffer);
+            ComunicationPacket aux = new ComunicationPacket((char) 5,number, buffer);
             byte[] toSendCP = InterpreterCliente.objectToBytes(aux);
             DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                     addr, port);
@@ -121,7 +114,7 @@ public class Sender extends Thread{
      */
     private synchronized void enviaRequest(){
         try {
-            ComunicationPacket p1 = new ComunicationPacket((char) 1, null);
+            ComunicationPacket p1 = new ComunicationPacket((char) 1, -1 ,null);
             byte[] toSend1 = InterpreterCliente.objectToBytes(p1);
             DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length,
                     addr, port);
@@ -149,7 +142,7 @@ public class Sender extends Thread{
 
     private synchronized void enviaTermination(){
         try {
-            ComunicationPacket p1 = new ComunicationPacket((char) 2, null);
+            ComunicationPacket p1 = new ComunicationPacket((char) 2,-1, null);
             byte[] toSend1 = InterpreterCliente.objectToBytes(p1);
             DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length,
                     addr, port);
@@ -160,5 +153,9 @@ public class Sender extends Thread{
         } catch (IOException ex) {
             System.out.println("ERRO (senderCliente.enviaTermination): " + ex.getMessage());
         }
+    }
+
+    public ArrayList getPacotesEnviar(){
+        return pacotesEnviar;
     }
 }
