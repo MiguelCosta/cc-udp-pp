@@ -87,7 +87,7 @@ public class Sender extends Thread{
         for ( int i = 0 ; i < objecto.length ; i++ , j++ ){
             buffer[j] = objecto[i];
             if ( j == lengthPacotes-105){
-                buffer[j]='\0';
+                //buffer[++j]='\0';
                 ComunicationPacket aux = new ComunicationPacket((char) 5, number++, buffer);
                 byte[] toSendCP = Interpreter.objectToBytes(aux);
                 DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
@@ -99,6 +99,7 @@ public class Sender extends Thread{
         }
 
         if (j != 0) {
+            System.out.println("j= "+j);
             buffer[j]='\0';
             ComunicationPacket aux = new ComunicationPacket((char) 5,number, buffer);
             byte[] toSendCP = Interpreter.objectToBytes(aux);

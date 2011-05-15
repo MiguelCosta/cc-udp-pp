@@ -41,16 +41,18 @@ public class Interpreter {
             bos.write(buf, 0, readNum); //no doubt here is 0
             //Writes len bytes from the specified byte array starting at offset
             //off to this byte array output stream.
-            System.out.println("read " + readNum + " bytes,");
+            //System.out.println("read " + readNum + " bytes,");
         }
 
         bytes = bos.toByteArray();
+        System.out.println("num: " + bytes.length);
         return bytes;
     }
 
     public static File bytestoFile(byte[] bytes, String fileName) throws
             FileNotFoundException, IOException{
         File file = null;
+        System.out.println("num: " + bytes.length);
 
         file = new File(fileName);
         FileOutputStream fos = new FileOutputStream(file);
