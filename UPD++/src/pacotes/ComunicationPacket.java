@@ -9,7 +9,7 @@ public class ComunicationPacket implements Serializable{
      * 1-Connect
      * 2-Disconnect
      * 3-Confirmation
-     * 4-Request
+     * 4-FileName
      * 5-DataTransfer
      */
     private char type; /* por questoes de optimizacao, char sao menos 3 bytes do  que int,

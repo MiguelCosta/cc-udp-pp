@@ -195,7 +195,7 @@ public class InterfaceCliente extends javax.swing.JDialog {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             if (!fc.getCurrentDirectory().getAbsolutePath().equals("") ) {
-                jTextField_FichEnviar.setText(fc.getCurrentDirectory().getAbsolutePath());
+                jTextField_FichEnviar.setText(fc.getSelectedFile().getAbsolutePath());
             }
         }
     }//GEN-LAST:event_jButtonFileChooserActionPerformed

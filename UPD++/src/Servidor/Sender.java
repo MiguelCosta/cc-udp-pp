@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import pacotes.ComunicationPacket;
+import pacotes.Interpreter;
 
 public class Sender extends Thread{
 
@@ -33,7 +34,7 @@ public class Sender extends Thread{
             sendConfirmacoes();
 
             ComunicationPacket p = new ComunicationPacket((char) 2,-1, new byte[1]);
-            byte[] toSend = InterpreterServidor.toBytes(p);
+            byte[] toSend = Interpreter.objectToBytes(p);
             DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
 
             socket.send(package1);
@@ -80,7 +81,7 @@ public class Sender extends Thread{
                     pausa();
                 if (!finish){
                     ComunicationPacket p = new ComunicationPacket((char) 3, confirmacoes.get(0), null);
-                    byte[] toSend = InterpreterServidor.toBytes(p);
+                    byte[] toSend = Interpreter.objectToBytes(p);
                     DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
 
                     socket.send(package1);

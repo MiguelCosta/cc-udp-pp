@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import pacotes.ComunicationPacket;
+import pacotes.Interpreter;
 
 /*Adiciona à Lista de Ligações, novas ligações*/
 public class ConnectionAccepter extends Thread{
@@ -28,7 +29,7 @@ public class ConnectionAccepter extends Thread{
                 newSkt.receive(newPkt);
 
                 /*Transformar o array de bytes num objecto*/
-                ComunicationPacket ComPkt = (ComunicationPacket) InterpreterServidor.toObject(newPkt.getData());
+                ComunicationPacket ComPkt = (ComunicationPacket) Interpreter.bytesToObject(newPkt.getData());
                 
                 if(ComPkt.getType()==1){
                     System.out.println("The client " + newPkt.getAddress() + " requested connection.\n");
@@ -44,7 +45,7 @@ public class ConnectionAccepter extends Thread{
                     
                     /*Enviar confirmação de ligacão e mostrar uma frase na consola a indicar que já se ligou*/
                     ComunicationPacket p = new ComunicationPacket((char)1,-1, null);
-                    byte[] toSend = InterpreterServidor.toBytes(p);
+                    byte[] toSend = Interpreter.objectToBytes(p);
                     DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, newPkt.getAddress(), newPkt.getPort());
 
                     newSkt.send(package1);
@@ -56,7 +57,7 @@ public class ConnectionAccepter extends Thread{
                     System.out.println("Package received no lugar errado");
                 }
             } 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             System.out.println("ERRO (ConnectionAccepterRun): " + ex.getMessage());
         }
     }
