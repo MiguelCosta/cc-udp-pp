@@ -43,7 +43,7 @@ public class ConnectionAccepter extends Thread{
                     i++;
                     
                     /*Enviar confirmação de ligacão e mostrar uma frase na consola a indicar que já se ligou*/
-                    ComunicationPacket p = new ComunicationPacket((char)1, null);
+                    ComunicationPacket p = new ComunicationPacket((char)1,-1, null);
                     byte[] toSend = InterpreterServidor.toBytes(p);
                     DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, newPkt.getAddress(), newPkt.getPort());
 

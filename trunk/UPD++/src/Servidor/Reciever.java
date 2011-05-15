@@ -34,7 +34,7 @@ public class Reciever extends Thread{
                     System.out.println("Package received");
                     //System.out.println("Recebido: " + InterpreterServidor.toObject(ComPkt.getData()));
 
-                    Connection.aumentaNumConfirmacoes();
+                    Connection.aumentaNumConfirmacoes(ComPkt.getNumber());
                     adicionaAoObjecto(ComPkt.getData());
                 }
 

@@ -37,8 +37,8 @@ public class Connection{
         return indice;
     }
 
-    public static void aumentaNumConfirmacoes(){
-        sender.aumentaNumConfirmacoes();
+    public static void aumentaNumConfirmacoes(int number){
+        sender.aumentaNumConfirmacoes(number);
     }
 
     public static void setFinish(){
