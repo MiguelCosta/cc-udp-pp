@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import pacotes.ComunicationPacket;
 import pacotes.Interpreter;
 
@@ -13,7 +14,8 @@ public class Sender extends Thread{
     private DatagramSocket socket;
     private InetAddress addr;
     private int port;
-    private boolean pausa;
+    private boolean pausa_Ligacao;
+    private boolean pausa_Utilizador;
     private ArrayList<DatagramPacket> pacotesEnviar;
     private int tamanhoJanela;
     private int numPacotes;
@@ -23,7 +25,8 @@ public class Sender extends Thread{
         this.socket = socket;
         this.addr = addr;
         this.port = port;
-        pausa = false;
+        pausa_Ligacao = false;
+        pausa_Utilizador = false;
         pacotesEnviar = new ArrayList<DatagramPacket>();
         this.tamanhoJanela = tamanhoJanela;
         numPacotes = 0;
@@ -35,32 +38,39 @@ public class Sender extends Thread{
     public void run(){
         try {
             enviaRequest();
-           
-            System.out.println("enviando data...");
 
             enviaPacotes();
 
-            System.out.println("fim enviando data...");
-
             enviaTermination();
-
-            System.out.println("sender finish");
         } catch (Exception ex) {
-            System.out.println("ERRO (senderCliente.run): " + ex.getMessage());
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO (senderCliente.run): "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
 
 
     private synchronized void pausa() throws InterruptedException {
-            pausa = true;
+            pausa_Ligacao = true;
             /* Ciclo para evitar que a thread acorde sem receber nada */
-            while (pausa)
+            while (pausa_Ligacao)
                 wait();
     }
 
     public synchronized void desPausa(){
-        pausa = false;
+        pausa_Ligacao = false;
+        notifyAll();
+    }
+
+        private synchronized void pausaUtilizador() throws InterruptedException {
+            pausa_Utilizador = true;
+            /* Ciclo para evitar que a thread acorde sem receber nada */
+            while (pausa_Utilizador)
+                wait();
+    }
+
+    public synchronized void desPausaUtilizador(){
+        pausa_Utilizador = false;
         notifyAll();
     }
 
