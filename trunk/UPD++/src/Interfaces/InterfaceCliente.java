@@ -11,6 +11,8 @@
 
 package Interfaces;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -88,6 +90,11 @@ public class InterfaceCliente extends javax.swing.JDialog {
         });
 
         jButtonEnviar.setText("Enviar");
+        jButtonEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEnviarActionPerformed(evt);
+            }
+        });
 
         jButtonSair.setText("Sair");
         jButtonSair.addActionListener(new java.awt.event.ActionListener() {
@@ -216,10 +223,19 @@ public class InterfaceCliente extends javax.swing.JDialog {
             ControllerCliente.criaCliente(ip, port, tamJanela, toSend, tamPacotes);
             jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
         } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(null, "ERRO (MainCliente.init): "
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButtonGerarPacotesActionPerformed
+
+    private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
+        try {
+            ControllerCliente.sendPackages();
+        } catch (InterruptedException ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonEnviarActionPerformed
 
     /**
     * @param args the command line arguments

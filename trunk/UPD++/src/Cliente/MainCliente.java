@@ -17,7 +17,6 @@ public class MainCliente {
     private static void init() throws SocketException{
             /*Inicializações*/
             socket = new DatagramSocket();
-
     }
 
     public static void main(String[] args) {
@@ -30,12 +29,15 @@ public class MainCliente {
         }
     }
 
-    public static void sender(String ip, int port, int tamanhoJanela, String toSend,
+    public static void initSender(String ip, int port, int tamanhoJanela, String toSend,
             int lengthPacotes) throws UnknownHostException, IOException, InterruptedException{
             /*Atribuir ip do servidor destino*/
             InetAddress addr = InetAddress.getByName(ip);
 
             s = new Sender(socket, addr, port, tamanhoJanela, toSend, lengthPacotes); //min 128
+    }
+
+    public static void continueSender() throws InterruptedException{
             s.start();
 
             r = new Reciever(socket);
@@ -43,9 +45,11 @@ public class MainCliente {
 
             r.join();
             s.join();
+    }
 
-            System.out.println("fechar ligacao");
-            socket.close();
+    public static void closeSender(){
+        System.out.println("fechar ligacao");
+        socket.close();
     }
 
     public static void desPausa(){
