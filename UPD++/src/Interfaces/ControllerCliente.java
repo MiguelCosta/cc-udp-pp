@@ -19,10 +19,18 @@ public class ControllerCliente {
 
     public static void criaCliente(String ip, int port, int tamanhoJanela, String toSend,
             int lengthPacotes) throws UnknownHostException, IOException, InterruptedException{
-        MainCliente.sender(ip, port, tamanhoJanela, toSend, lengthPacotes);
+        MainCliente.initSender(ip, port, tamanhoJanela, toSend, lengthPacotes);
     }
 
     public static Object[] getPacotesEnviar(){
         return MainCliente.getSender().getPacotesEnviar().toArray();
+    }
+
+    public static void sendPackages() throws InterruptedException{
+        MainCliente.continueSender();
+    }
+
+    public static void closeConnection(){
+        MainCliente.closeSender();
     }
 }
