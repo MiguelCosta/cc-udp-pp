@@ -15,7 +15,7 @@ public class Connection{
     Connection(int i,DatagramSocket socket, InetAddress addr, int port){
         indice = i;
         this.socket=socket;
-        reciever=new Reciever(socket);
+        reciever=new Reciever(socket,256);
         sender= new Sender(socket,addr,port);
     }
 

@@ -1,8 +1,12 @@
 package Cliente;
 
 import Interfaces.InterfaceCliente;
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import javax.swing.JOptionPane;
 
 public class MainCliente {
 
@@ -10,24 +14,24 @@ public class MainCliente {
     private static Sender s;
     private static Reciever r;
 
-    private static void init(){
-        try {
+    private static void init() throws SocketException{
             /*Inicializações*/
             socket = new DatagramSocket();
-        } catch (Exception ex) {
-            System.out.println("ERRO (MainCliente.init): " + ex.getMessage());
-        }
+
     }
 
     public static void main(String[] args) {
+        try {
             init();
             InterfaceCliente.main();
+        } catch (SocketException ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO (MainCliente.init): "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void sender(String ip, int port, int tamanhoJanela, String toSend,
-            int lengthPacotes){
-        try {
-
+            int lengthPacotes) throws UnknownHostException, IOException, InterruptedException{
             /*Atribuir ip do servidor destino*/
             InetAddress addr = InetAddress.getByName(ip);
 
@@ -42,10 +46,6 @@ public class MainCliente {
 
             System.out.println("fechar ligacao");
             socket.close();
-
-        } catch (Exception ex) {
-            System.out.println("ERRO (MainClient.sender): " + ex.getMessage());
-        }
     }
 
     public static void desPausa(){

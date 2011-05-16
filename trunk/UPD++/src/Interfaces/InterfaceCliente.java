@@ -12,6 +12,7 @@
 package Interfaces;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -74,6 +75,10 @@ public class InterfaceCliente extends javax.swing.JDialog {
         });
 
         jScrollPane1.setViewportView(jList_Pacotes);
+        jTextField_IP.setText("192.168.10.8");
+        jTextField_Porta.setText("4545");
+        jTextField_TamJanela.setText("8");
+        jTextField_TamanhoPacotes.setText("256");
 
         jButtonGerarPacotes.setText("Gerar Pacotes");
         jButtonGerarPacotes.addActionListener(new java.awt.event.ActionListener() {
@@ -201,14 +206,19 @@ public class InterfaceCliente extends javax.swing.JDialog {
     }//GEN-LAST:event_jButtonFileChooserActionPerformed
 
     private void jButtonGerarPacotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarPacotesActionPerformed
-        String ip = jTextField_IP.getText();
-        int port = Integer.parseInt(jTextField_Porta.getText());
-        int tamJanela = Integer.parseInt(jTextField_TamJanela.getText());
-        String toSend = jTextField_FichEnviar.getText();
-        int tamPacotes = Integer.parseInt(jTextField_TamanhoPacotes.getText());
-        
-        ControllerCliente.criaCliente(ip, port, tamJanela, toSend, tamPacotes);
-        jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
+        try {
+            String ip = jTextField_IP.getText();
+            int port = Integer.parseInt(jTextField_Porta.getText());
+            int tamJanela = Integer.parseInt(jTextField_TamJanela.getText());
+            String toSend = jTextField_FichEnviar.getText();
+            int tamPacotes = Integer.parseInt(jTextField_TamanhoPacotes.getText());
+
+            ControllerCliente.criaCliente(ip, port, tamJanela, toSend, tamPacotes);
+            jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO (MainCliente.init): "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonGerarPacotesActionPerformed
 
     /**

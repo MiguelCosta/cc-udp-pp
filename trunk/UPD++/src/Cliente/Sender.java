@@ -81,8 +81,9 @@ public class Sender extends Thread{
         pacotesEnviar.add(package1);
 
         byte[] objecto = Interpreter.filetoBytes(toSend);
+        System.out.println("Cria Pacotes - objecto bytes : " + objecto.length);
 
-        byte[] buffer = new byte[lengthPacotes-104]; /* 1 byte para o char (tipo pacote)*/
+        byte[] buffer = new byte[lengthPacotes-104]; 
         int j = 0, number = 0;
         for ( int i = 0 ; i < objecto.length ; i++ , j++ ){
             buffer[j] = objecto[i];
@@ -99,19 +100,16 @@ public class Sender extends Thread{
         }
 
         if (j != 0) {
-            System.out.println("j= "+j);
-            buffer[j]='\0';
-            ComunicationPacket aux = new ComunicationPacket((char) 5,number, buffer);
+            byte[] buffer2 = new byte[j];
+            for( int i = 0 ; i < j ; i++ )
+                buffer2[i] = buffer[i];
+            ComunicationPacket aux = new ComunicationPacket((char) 5, number, buffer2);
             byte[] toSendCP = Interpreter.objectToBytes(aux);
             DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                     addr, port);
 
             pacotesEnviar.add(pacote);
         }
-
-        for ( DatagramPacket dp : pacotesEnviar)
-            System.out.println("tamanho pacote : " + dp.getData().length);
-
     }
 
     /**
@@ -132,6 +130,8 @@ public class Sender extends Thread{
     }
 
     private synchronized void enviaPacotes() throws IOException, InterruptedException{
+        System.out.println("Num Pacotes: " + (pacotesEnviar.size()-1));
+
             for (DatagramPacket dp : pacotesEnviar){
                 while ( numPacotes >= tamanhoJanela ) /* esta um ciclo em vez de */
                     pausa();       /* um if, porque se receber um 1, acorda o an mesma, mas nao dec o numPacotes*/
