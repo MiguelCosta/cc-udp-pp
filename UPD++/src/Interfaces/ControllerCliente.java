@@ -7,6 +7,8 @@ package Interfaces;
 
 import Cliente.MainCliente;
 import Cliente.Sender;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 /**
  *
@@ -16,7 +18,7 @@ public class ControllerCliente {
     private Sender s;
 
     public static void criaCliente(String ip, int port, int tamanhoJanela, String toSend,
-            int lengthPacotes){
+            int lengthPacotes) throws UnknownHostException, IOException, InterruptedException{
         MainCliente.sender(ip, port, tamanhoJanela, toSend, lengthPacotes);
     }
 
