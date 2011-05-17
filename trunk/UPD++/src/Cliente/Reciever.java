@@ -10,11 +10,13 @@ public class Reciever extends Thread{
     private DatagramSocket socket;
     private boolean finish;
     private RecieverListener rl;
+    private int confirmacoesRecebidas;
 
     public Reciever(DatagramSocket socket, RecieverListener rl){
         this.socket = socket;
         finish = false;
         this.rl = rl;
+        confirmacoesRecebidas = 0;
     }
 
     @Override
@@ -42,9 +44,11 @@ public class Reciever extends Thread{
                         finish = true;
                         break;
                     case 3 :
-                        MainCliente.decrementaNumPacotes();
+                        MainCliente.decrementaTamanhoJanelaUtilizado();
                         MainCliente.desPausa();
+                        confirmacoesRecebidas++;
                         disparaConfirmacaoRecebida();
+                        System.out.println("Confirmacao recebida");
                         break;
                     default :
                         javax.swing.JOptionPane.showMessageDialog(null, "ERRO (Receiver): "
@@ -57,6 +61,10 @@ public class Reciever extends Thread{
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ReceiverCliente.run): "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public int getConfirmacoesRecebidas(){
+        return confirmacoesRecebidas;
     }
 
     private void disparaConeccaoEstabelecida() {

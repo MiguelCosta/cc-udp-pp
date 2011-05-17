@@ -49,13 +49,12 @@ public class MainCliente {
     }
 
     public static void sendPackages() throws InterruptedException{
-            s.start();
-
-            r.join();
-            s.join();
+        s.start();
     }
 
     public static void closeSender() throws IOException, InterruptedException{
+        r.join();
+        s.join();
         s.enviaTermination();
 
         socket.close();
@@ -73,11 +72,15 @@ public class MainCliente {
         s.desPausa();
     }
 
-    public static void pausaSender(){
+    public static void pausaSender() throws InterruptedException{
         s.pausa();
     }
 
-    public static void decrementaNumPacotes(){
-        s.decrementaNumPacotes();
+    public static void decrementaTamanhoJanelaUtilizado(){
+        s.decrementaTamanhoJanelaUtilizado();
+    }
+
+    public static void stopSender(){
+        s.stop();
     }
 }
