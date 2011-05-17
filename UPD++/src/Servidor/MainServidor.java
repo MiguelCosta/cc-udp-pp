@@ -1,22 +1,32 @@
 package Servidor;
 
 import Interfaces.InterfaceServidor;
-import javax.swing.JOptionPane;
 
 public class MainServidor {
+    private static ConnectionAccepter ca;
 
     public static void main(String[] args) {
-        try {
-            ConnectionAccepter accepter = new ConnectionAccepter(2);
-            
-            accepter.start();
-            InterfaceServidor.main();
-            accepter.join();
 
-        } catch (InterruptedException ex) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Problema na tabela"
-                    , "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        InterfaceServidor.main();
+
     }
 
+    public static void iniciaServidor(int numConections, ConnectionAccepterListener cal,
+            int tamPacotes, RecieverListener rl, SenderListener sl){
+        ca = new ConnectionAccepter(numConections, cal, tamPacotes, rl, sl);
+
+        ca.start();
+    }
+
+    public static void desligaServidor() throws InterruptedException{
+        ca.join();
+    }
+
+    public static Object[] getClientes(){
+        return ca.getClientes();
+    }
+
+    public static ConnectionAccepter getCa(){
+        return ca;
+    }
 }

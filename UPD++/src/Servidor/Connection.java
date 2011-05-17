@@ -5,18 +5,19 @@ import java.net.InetAddress;
 
 public class Connection{
 
-    private static int indice;
+    private InetAddress ip;
     private DatagramSocket socket;
 
     private static Reciever reciever;
     private static Sender sender;
 
 
-    Connection(int i,DatagramSocket socket, InetAddress addr, int port){
-        indice = i;
+    Connection(InetAddress ip, DatagramSocket socket, InetAddress addr, int port,
+            int tamPacotes, RecieverListener rl, SenderListener sl){
+        this.ip = ip;
         this.socket=socket;
-        reciever=new Reciever(socket,256);
-        sender= new Sender(socket,addr,port);
+        reciever=new Reciever(socket,tamPacotes, rl);
+        sender= new Sender(socket,addr,port,sl);
     }
 
     public void main() throws InterruptedException{
@@ -26,11 +27,7 @@ public class Connection{
             reciever.join();
             sender.join();
             
-            ConnectionAccepter.eliminaConnection(indice);
-    }
-
-    public int getIndice(){
-        return indice;
+            ConnectionAccepter.eliminaConnection(ip);
     }
 
     public static void aumentaNumConfirmacoes(int number){
@@ -43,5 +40,13 @@ public class Connection{
 
     public DatagramSocket getSocket(){
         return socket;
+    }
+
+    public static Sender getSender(){
+        return sender;
+    }
+
+    public static Reciever getReciever(){
+        return reciever;
     }
 }

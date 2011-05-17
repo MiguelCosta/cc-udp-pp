@@ -15,17 +15,23 @@ public class Sender extends Thread{
     private int port;
     //private int numConfirmacoes;
     private ArrayList<Integer> confirmacoes;
+    private ArrayList<Integer> confirmados;
     private boolean pausa;
     private boolean finish;
+    private SenderListener sl;
 
-    Sender(DatagramSocket socket, InetAddress addr, int port){
+    private boolean toogle;
+
+    Sender(DatagramSocket socket, InetAddress addr, int port, SenderListener sl){
         this.socket = socket;
         this.addr = addr;
         this.port = port;
         //numConfirmacoes = 0;
         confirmacoes = new ArrayList<Integer>();
+        confirmados = new ArrayList<Integer>();
         pausa = false;
         finish = false;
+        this.sl = sl;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class Sender extends Thread{
         try {
             while(!finish){
                 //while (numConfirmacoes == 0 && !finish)
-                while (confirmacoes.isEmpty() && !finish)
+                while (confirmacoes.isEmpty() && !finish && toogle )
                     pausa();
                 if (!finish){
                     ComunicationPacket p = new ComunicationPacket((char) 3, confirmacoes.get(0), null);
@@ -88,11 +94,42 @@ public class Sender extends Thread{
                     System.out.println("confirmacao enviada");
 
                     //numConfirmacoes--;
+                    confirmados.add(confirmacoes.get(0));
                     confirmacoes.remove(0);
                 }
             }
         } catch (IOException ex) {
             System.out.println("ERRO (senderServidor.sendConfirmacoes): " + ex.getMessage());
         }
+    }
+
+    public synchronized void setToogle( boolean b ){
+        toogle = b;
+        notifyAll();
+    }
+
+    private synchronized void sendConfirmacao(int i) throws IOException{
+        boolean found = false;
+        for (int j = 0 ; j < confirmacoes.size() && !found; j++)
+            if( i == confirmacoes.get(j) ){
+                ComunicationPacket p = new ComunicationPacket((char) 3, confirmacoes.get(j), null);
+                byte[] toSend = Interpreter.objectToBytes(p);
+                DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
+
+                socket.send(package1);
+                System.out.println("confirmacao enviada");
+
+                confirmados.add(i);
+                confirmacoes.remove(j);
+                found = true;
+            }
+    }
+
+    public ArrayList getConfirmacoes(){
+        return confirmacoes;
+    }
+
+    public ArrayList getConfirmados(){
+        return confirmados;
     }
 }
