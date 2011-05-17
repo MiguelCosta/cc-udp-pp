@@ -30,19 +30,23 @@ public class ControllerServidor {
         return MainServidor.getClientes();
     }
 
-    public static int getNumPacotesRecebidos(InetAddress ip){
+    public static int getNumPacotesRecebidos(String ip){
         return MainServidor.getCa().getConnection(ip).getReciever().getNumeroPacotesRecebidos();
     }
 
-    public static int getNumPacotesTotal(InetAddress ip){
+    public static int getNumPacotesTotal(String ip){
         return MainServidor.getCa().getConnection(ip).getReciever().getNumeroTotalPacotes();
     }
 
-    public static Object[] getPacotesConfirmados(InetAddress ip){
+    public static Object[] getPacotesConfirmados(String ip){
         return MainServidor.getCa().getConnection(ip).getSender().getConfirmados().toArray();
     }
 
-    public static Object[] getPacotesPorConfirmar(InetAddress ip){
+    public static Object[] getPacotesPorConfirmar(String ip){
         return MainServidor.getCa().getConnection(ip).getSender().getConfirmacoes().toArray();
+    }
+
+    public static void setToogle(String ip,boolean b){
+        MainServidor.getCa().getConnection(ip).getSender().setToogle(b);
     }
 }

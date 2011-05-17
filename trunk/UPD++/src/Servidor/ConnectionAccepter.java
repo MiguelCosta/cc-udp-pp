@@ -20,7 +20,7 @@ public class ConnectionAccepter extends Thread{
 
     public ConnectionAccepter(int numeroMaxConnects, ConnectionAccepterListener cal,
             int tamPacotes, RecieverListener rl, SenderListener sl) {
-       connectionList = new TreeMap<InetAddress,Connection>();
+       connectionList = new TreeMap<String,Connection>();
        this.cal = cal;
        i = 0;
        this.tamPacotes = tamPacotes;
@@ -44,11 +44,13 @@ public class ConnectionAccepter extends Thread{
                     case 1 :
                         System.out.println("The client " + newPkt.getAddress() + " requested connection.\n");
                         System.out.println("" + newPkt.getAddress() + " " + newPkt.getPort());
-                        Connection newCnt = new Connection(newPkt.getAddress(),
-                                newSkt,newPkt.getAddress(),newPkt.getPort(),tamPacotes, rl, sl);
+                        Connection newCnt = new Connection(newPkt.getAddress().toString()
+                                +" "+newPkt.getPort(),newSkt,newPkt.getAddress(),
+                                newPkt.getPort(),tamPacotes, rl, sl);
 
                         /*Adicionar a Ligacao à lista de ligações*/
-                        connectionList.put(newPkt.getAddress(), newCnt);
+                        connectionList.put(newPkt.getAddress().toString() + " " +
+                                newPkt.getPort(), newCnt);
                         disparaClienteLigouse();
 
                         /*Enviar confirmação de ligacão e mostrar uma frase na consola a indicar que já se ligou*/
@@ -73,7 +75,7 @@ public class ConnectionAccepter extends Thread{
         }
     }
 
-    public synchronized static void eliminaConnection(InetAddress ip){
+    public synchronized static void eliminaConnection(String ip){
 
         connectionList.remove(ip);
 
@@ -90,7 +92,7 @@ public class ConnectionAccepter extends Thread{
         return connectionList.keySet().toArray();
     }
 
-    public Connection getConnection(InetAddress ip){
+    public Connection getConnection(String ip){
         return (Connection) connectionList.get(ip);
     }
 }
