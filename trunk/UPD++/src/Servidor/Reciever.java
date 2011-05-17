@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import pacotes.ComunicationPacket;
@@ -15,21 +16,27 @@ public class Reciever extends Thread{
     private boolean finish;
     private TreeMap<Integer,byte[]> objecto;
     private String objectoName;
-    private int lenghtPacotes;
+    private int tamPacotes;
+    private int numeroTotalPacotes;
+    private int numeroPacotesRecebidos;
+    private RecieverListener rl;
 
-    Reciever(DatagramSocket socket, int lenghtPacotes){
+    Reciever(DatagramSocket socket, int tamPacotes, RecieverListener rl){
         this.socket=socket;
         finish = false;
         objecto = new TreeMap<Integer, byte[]>();
         objectoName = "default";
-        this.lenghtPacotes = lenghtPacotes;
+        this.tamPacotes = tamPacotes;
+        numeroPacotesRecebidos = 0;
+        numeroTotalPacotes = 0;
+        this.rl = rl;
     }
 
     @Override
     public void run(){
         try {
             while (!finish) {
-                byte[] buffer = new byte[lenghtPacotes];
+                byte[] buffer = new byte[tamPacotes];
                 DatagramPacket newPkt = new DatagramPacket(buffer, buffer.length);
                 socket.receive(newPkt);
 
@@ -41,15 +48,19 @@ public class Reciever extends Thread{
                         System.out.println("Package received");
                         Connection.aumentaNumConfirmacoes(comPkt.getNumber());
                         adicionaAoObjecto(comPkt.getNumber(),comPkt.getData());
+                        disparaPacoteRecebido();
+                        numeroPacotesRecebidos++;
                         break;
                     case 4 :
                         //System.out.println("Name Received");
                         objectoName = (String) Interpreter.bytesToObject(comPkt.getData());
+                        numeroTotalPacotes = comPkt.getNumber();
                         break;
                     case 2 :
                         //System.out.println("Termination received");
                         criaObjectoFinal();
                         Connection.setFinish();
+                        disparaTerminoLigacao();
                         finish = true;
                         break;
                     default:
@@ -85,4 +96,29 @@ public class Reciever extends Thread{
         Interpreter.bytestoFile(objectoFinal, objectoName);
     }
 
+    private void disparaPacoteRecebido(){
+        RecieverEvent event = new RecieverEvent(this);
+
+        rl.recebeuPacote(event);
+    }
+
+    private void disparaTerminoLigacao(){
+        RecieverEvent event = new RecieverEvent(this);
+
+        rl.recebeuTerminoLigacao(event);
+    }
+
+    private void disparaNumTotalPacotes(){
+        RecieverEvent event = new RecieverEvent(this);
+
+        rl.recebeuTamanhoPacotesReceber(event);
+    }
+
+    public int getNumeroTotalPacotes(){
+        return numeroTotalPacotes;
+    }
+
+    public int getNumeroPacotesRecebidos(){
+        return numeroPacotesRecebidos;
+    }
 }
