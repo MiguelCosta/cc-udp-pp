@@ -31,11 +31,9 @@ public class Reciever extends Thread{
                     System.out.println("recebeu");
                 switch (comPkt.getType()) {
                     case 1 :
-                        System.out.println("coisa0");
+                        MainCliente.firstRTT=System.currentTimeMillis() - MainCliente.firstRTT;
                         MainCliente.desPausa();
-                        System.out.println("coisa1");
                         disparaConeccaoEstabelecida();
-                        System.out.println("coisa2");
                         break;
                     case 2 :
                         MainCliente.desPausa();
@@ -44,6 +42,7 @@ public class Reciever extends Thread{
                         finish = true;
                         break;
                     case 3 :
+                        MainCliente.getTimeCounter().stopCounter(comPkt.getNumber());
                         MainCliente.decrementaTamanhoJanelaUtilizado();
                         MainCliente.desPausa();
                         confirmacoesRecebidas++;

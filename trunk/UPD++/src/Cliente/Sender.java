@@ -136,7 +136,7 @@ public class Sender extends Thread{
 
             pacotesEnviar.add(pacote);
         }
-
+        MainCliente.initTimeCounter();
         disparaPacotesGerados();
     }
 
@@ -153,20 +153,23 @@ public class Sender extends Thread{
                     addr, port);
 
             socket.send(package1);
-
+            //Começar a contabilizar o primeiro RTT
+            MainCliente.firstRTT=System.currentTimeMillis();
             //pausa(); /* Esperar que o servidor estabeleca a conexao com o cliente */
     }
 
     private synchronized void enviaPacotes() throws IOException, InterruptedException{
         System.out.println("Num Pacotes: " + (pacotesEnviar.size()-1));
-
+            int i=0;
             for (DatagramPacket dp : pacotesEnviar){
                 while ( tamanhoJanelaUtilizado >= tamanhoJanela ) /* esta um ciclo em vez de */
                     pausa();       /* um if, porque se receber um 1, acorda o an mesma, mas nao dec o tamanhoJanelaUtilizado*/
                 socket.send(dp);
                 tamanhoJanelaUtilizado++;
                 numEnviados++;
+                MainCliente.getTimeCounter().startCounter(i);
                 disparaPacoteEnviado();
+                i++;
             }
 
         disparaPacotesEnviados();
@@ -200,4 +203,5 @@ public class Sender extends Thread{
 
         sl.pacoteEnviado(event);
     }
+
 }
