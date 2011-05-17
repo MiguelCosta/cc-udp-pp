@@ -5,14 +5,14 @@ import java.net.InetAddress;
 
 public class Connection{
 
-    private InetAddress ip;
+    private String ip;
     private DatagramSocket socket;
 
     private static Reciever reciever;
     private static Sender sender;
 
 
-    Connection(InetAddress ip, DatagramSocket socket, InetAddress addr, int port,
+    Connection(String ip, DatagramSocket socket, InetAddress addr, int port,
             int tamPacotes, RecieverListener rl, SenderListener sl){
         this.ip = ip;
         this.socket=socket;
@@ -42,11 +42,11 @@ public class Connection{
         return socket;
     }
 
-    public static Sender getSender(){
+    public Sender getSender(){
         return sender;
     }
 
-    public static Reciever getReciever(){
+    public Reciever getReciever(){
         return reciever;
     }
 }

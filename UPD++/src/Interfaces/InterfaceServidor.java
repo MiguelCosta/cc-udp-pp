@@ -16,7 +16,6 @@ import Servidor.ConnectionAccepterEvent;
 import Servidor.ConnectionAccepterListener;
 import Servidor.SenderEvent;
 import Servidor.SenderListener;
-import java.net.InetAddress;
 
 /**
  *
@@ -38,13 +37,20 @@ public class InterfaceServidor extends javax.swing.JDialog {
 
             public void clienteLigouse(ConnectionAccepterEvent e) {
                 jList_Clientes.setListData(ControllerServidor.getClientes());
+
+                if ( jList_Clientes.getSelectedValue() == null )
+                    jList_Clientes.setSelectedIndex(0);
+
+                String ip = (String) jList_Clientes.getSelectedValue();
+
+                ControllerServidor.setToogle(ip, jToggleButton_ActConfirmacoes.isSelected());
             }
         };
 
         rl = new RecieverListener() {
 
             public void recebeuPacote(Servidor.RecieverEvent e) {
-                InetAddress ip = (InetAddress) jList_Clientes.getSelectedValue();
+                String ip = (String) jList_Clientes.getSelectedValue();
 
                 if ( ip != null ){
                     jLabel_NumPacRecebidos.setText(""+ControllerServidor.getNumPacotesRecebidos(ip));
@@ -53,7 +59,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
             }
 
             public void recebeuTamanhoPacotesReceber(Servidor.RecieverEvent e) {
-                InetAddress ip = (InetAddress) jList_Clientes.getSelectedValue();
+                String ip = (String) jList_Clientes.getSelectedValue();
 
                 if ( ip != null )
                     jLabel_NumPacRecebidos.setText(""+ControllerServidor.getNumPacotesTotal(ip));
@@ -67,7 +73,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
         sl = new SenderListener() {
 
             public void confirmouPacote(SenderEvent e) {
-                InetAddress ip = (InetAddress) jList_Clientes.getSelectedValue();
+                String ip = (String) jList_Clientes.getSelectedValue();
 
                 if ( ip != null ) {
                     jList_Confirmados.setListData(ControllerServidor.getPacotesConfirmados(ip));
@@ -114,8 +120,10 @@ public class InterfaceServidor extends javax.swing.JDialog {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(551, 507));
         setResizable(false);
 
         jList_Clientes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -199,10 +207,10 @@ public class InterfaceServidor extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_ClienteEspecificoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_ClienteEspecificoLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton_ConfirmaPacote))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_ClienteEspecificoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel_NumPacTotal)
@@ -219,14 +227,14 @@ public class InterfaceServidor extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_MaxLigacoes, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addComponent(jTextField_MaxLigacoes, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE))
             .addComponent(jPanel_ClienteEspecifico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField_MaxLigacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -266,7 +274,11 @@ public class InterfaceServidor extends javax.swing.JDialog {
         jMenu2.setText("Edit");
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("Servidor : ");
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
+        estadoInicial();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -274,20 +286,25 @@ public class InterfaceServidor extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(jButton_Kick, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextfield_TamPacotes, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addComponent(jButton_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(jLabel9)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jTextfield_TamPacotes, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(57, 57, 57)
+                                    .addComponent(jButton_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(jLabel1)))
+                            .addGap(0, 0, 0))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton_Kick, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(58, 58, 58)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -297,10 +314,14 @@ public class InterfaceServidor extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(455, Short.MAX_VALUE)
+                .addComponent(jButton_Kick)
+                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -310,10 +331,8 @@ public class InterfaceServidor extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_Kick)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         pack();
@@ -328,24 +347,36 @@ public class InterfaceServidor extends javax.swing.JDialog {
         int numConeccoes = Integer.parseInt(jTextField_MaxLigacoes.getText());
 
         ControllerServidor.iniciaServidor(numConeccoes,tamPacotes, cal, rl, sl);
+
+        estadoServidorLigado();
     }//GEN-LAST:event_jButton_StartActionPerformed
 
     private void jList_ClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList_ClientesMouseClicked
-        InetAddress ip = (InetAddress) jList_Clientes.getSelectedValue();
-        
-        estadoViewCliente(ip);
+        if (jList_Clientes.getSelectedIndices().length == 1){
+
+            String ip = (String) jList_Clientes.getSelectedValue();
+
+            estadoViewCliente(ip);
+        }
     }//GEN-LAST:event_jList_ClientesMouseClicked
 
     private void estadoInicial(){
         jPanel_ClienteEspecifico.setVisible(false);
         jButton_Kick.setEnabled(false);
+
+        jToggleButton_ActConfirmacoes.setSelected(true);
+        jMenu3.setText("Servidor : OFF");
+        jMenu3.setEnabled(false);
     }
 
     private void estadoServidorLigado(){
         jButton_Start.setEnabled(false);
+        jMenu3.setText("Servidor : ON");
     }
 
-    private void estadoViewCliente(InetAddress ip){
+    private void estadoViewCliente(String ip){
+        jPanel_ClienteEspecifico.setVisible(true);
+
         jList_Confirmados.setListData(ControllerServidor.getPacotesConfirmados(ip));
         jList_NaoConfirmados.setListData(ControllerServidor.getPacotesPorConfirmar(ip));
 
@@ -388,6 +419,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
     private javax.swing.JList jList_NaoConfirmados;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
