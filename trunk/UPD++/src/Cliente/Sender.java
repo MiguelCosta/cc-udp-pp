@@ -14,67 +14,71 @@ public class Sender extends Thread{
     private DatagramSocket socket;
     private InetAddress addr;
     private int port;
-    private boolean pausa_Ligacao;
-    private boolean pausa_Utilizador;
+    private boolean pausa;
+    private SenderListener sl;
+
     private ArrayList<DatagramPacket> pacotesEnviar;
-    private int tamanhoJanela;
     private int numPacotes;
 
-    public Sender(DatagramSocket socket, InetAddress addr, int port, int tamanhoJanela,
-        String toSend, int lengthPacotes) throws IOException{
+    private int tamanhoJanela;
+
+    public Sender(DatagramSocket socket, InetAddress addr, int port, SenderListener sl)
+            throws IOException, InterruptedException{
         this.socket = socket;
         this.addr = addr;
         this.port = port;
-        pausa_Ligacao = false;
-        pausa_Utilizador = false;
-        pacotesEnviar = new ArrayList<DatagramPacket>();
-        this.tamanhoJanela = tamanhoJanela;
-        numPacotes = 0;
+        pausa = false;
+        this.sl = sl;
 
-        criaPacotes(toSend, lengthPacotes);
+        enviaRequest();
+    }
+
+    public void setFicheiro(String fileDatapath, int lengthPacotes) throws IOException{
+        pacotesEnviar = new ArrayList<DatagramPacket>();
+
+        criaPacotes(fileDatapath, lengthPacotes);
+        numPacotes = pacotesEnviar.size();
+    }
+
+    public void setTamanhoJanelaInicial(int tamanhoJanela){
+        this.tamanhoJanela = tamanhoJanela;
+    }
+
+    public int getTotalPackages(){
+        return numPacotes;
+    }
+
+    public ArrayList getPacotesEnviar(){
+        return pacotesEnviar;
+    }
+
+    public int getTamanhoJanela(){
+        return tamanhoJanela;
     }
 
     @Override
     public void run(){
         try {
-            enviaRequest();
-
             enviaPacotes();
-
-            enviaTermination();
         } catch (Exception ex) {
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO (senderCliente.run): "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-
-
-    private synchronized void pausa() throws InterruptedException {
-            pausa_Ligacao = true;
+    public synchronized void pausa() throws InterruptedException {
+            pausa = true;
             /* Ciclo para evitar que a thread acorde sem receber nada */
-            while (pausa_Ligacao)
+            while (pausa)
                 wait();
     }
 
     public synchronized void desPausa(){
-        pausa_Ligacao = false;
+        pausa = false;
         notifyAll();
     }
 
-        private synchronized void pausaUtilizador() throws InterruptedException {
-            pausa_Utilizador = true;
-            /* Ciclo para evitar que a thread acorde sem receber nada */
-            while (pausa_Utilizador)
-                wait();
-    }
-
-    public synchronized void desPausaUtilizador(){
-        pausa_Utilizador = false;
-        notifyAll();
-    }
-
-    public synchronized void decrementaNumPAcotes(){
+    public synchronized void decrementaNumPacotes(){
         numPacotes--; 
     }
 
@@ -120,6 +124,8 @@ public class Sender extends Thread{
 
             pacotesEnviar.add(pacote);
         }
+
+        disparaPacotesGerados();
     }
 
     /**
@@ -148,9 +154,11 @@ public class Sender extends Thread{
                 socket.send(dp);
                 numPacotes++;
             }
+
+        disparaPacotesEnviados();
     }
 
-    private synchronized void enviaTermination() throws IOException, InterruptedException{
+    public synchronized void enviaTermination() throws IOException, InterruptedException{
             ComunicationPacket p1 = new ComunicationPacket((char) 2,-1, null);
             byte[] toSend1 = Interpreter.objectToBytes(p1);
             DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length,
@@ -161,7 +169,15 @@ public class Sender extends Thread{
             pausa(); /* Esperar que o servidor estabeleca a conexao com o cliente */
     }
 
-    public ArrayList getPacotesEnviar(){
-        return pacotesEnviar;
+    private void disparaPacotesGerados(){
+        SenderEvent event = new SenderEvent(this);
+
+        sl.pacotesGerados(event);
+    }
+
+    private void disparaPacotesEnviados(){
+        SenderEvent event = new SenderEvent(this);
+        
+        sl.pacotesEnviados(event);
     }
 }
