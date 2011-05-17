@@ -69,8 +69,8 @@ public class InterfaceCliente extends javax.swing.JDialog{
             }
 
             public void pacotesEnviados(SenderEvent e) {
-                        javax.swing.JOptionPane.showMessageDialog(null, "Info : "
-                    + "OS pacotes foram todos enviados" , "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        //javax.swing.JOptionPane.showMessageDialog(null, "Info : "
+                    //+ "Os pacotes foram todos enviados" , "INFO", JOptionPane.INFORMATION_MESSAGE);
             }
 
             public void pacoteEnviado(SenderEvent e) {
