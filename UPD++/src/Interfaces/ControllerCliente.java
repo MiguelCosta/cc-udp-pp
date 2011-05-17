@@ -42,4 +42,24 @@ public class ControllerCliente {
     public static void closeConnection() throws IOException, InterruptedException{
         MainCliente.closeSender();
     }
+
+    public static void pausaSender() throws InterruptedException{
+        MainCliente.pausaSender();
+    }
+
+    public static void despausaSender(){
+        MainCliente.desPausa();
+    }
+
+    public static void stopSender(){
+        MainCliente.stopSender();
+    }
+
+    public static int getConfirmacoes(){
+        return MainCliente.getReciever().getConfirmacoesRecebidas();
+    }
+
+    public static int getTotalEnviados(){
+        return MainCliente.getSender().getTotalEnviados();
+    }
 }

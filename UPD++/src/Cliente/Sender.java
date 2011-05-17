@@ -18,8 +18,9 @@ public class Sender extends Thread{
     private SenderListener sl;
 
     private ArrayList<DatagramPacket> pacotesEnviar;
-    private int numPacotes;
-
+    private int numEnviados;
+    
+    private int tamanhoJanelaUtilizado;
     private int tamanhoJanela;
 
     public Sender(DatagramSocket socket, InetAddress addr, int port, SenderListener sl)
@@ -30,6 +31,8 @@ public class Sender extends Thread{
         pausa = false;
         this.sl = sl;
 
+        tamanhoJanelaUtilizado = 0;
+
         enviaRequest();
     }
 
@@ -37,7 +40,7 @@ public class Sender extends Thread{
         pacotesEnviar = new ArrayList<DatagramPacket>();
 
         criaPacotes(fileDatapath, lengthPacotes);
-        numPacotes = pacotesEnviar.size();
+        numEnviados = 0;
     }
 
     public void setTamanhoJanelaInicial(int tamanhoJanela){
@@ -45,7 +48,7 @@ public class Sender extends Thread{
     }
 
     public int getTotalPackages(){
-        return numPacotes;
+        return tamanhoJanelaUtilizado;
     }
 
     public ArrayList getPacotesEnviar(){
@@ -54,6 +57,10 @@ public class Sender extends Thread{
 
     public int getTamanhoJanela(){
         return tamanhoJanela;
+    }
+
+    public int getTotalEnviados(){
+        return numEnviados;
     }
 
     @Override
@@ -78,8 +85,8 @@ public class Sender extends Thread{
         notifyAll();
     }
 
-    public synchronized void decrementaNumPacotes(){
-        numPacotes--; 
+    public synchronized void decrementaTamanhoJanelaUtilizado(){
+        tamanhoJanelaUtilizado--;
     }
 
     private void criaPacotes(String toSend, int lengthPacotes) throws IOException{
@@ -142,17 +149,19 @@ public class Sender extends Thread{
 
             socket.send(package1);
 
-            pausa(); /* Esperar que o servidor estabeleca a conexao com o cliente */
+            //pausa(); /* Esperar que o servidor estabeleca a conexao com o cliente */
     }
 
     private synchronized void enviaPacotes() throws IOException, InterruptedException{
         System.out.println("Num Pacotes: " + (pacotesEnviar.size()-1));
 
             for (DatagramPacket dp : pacotesEnviar){
-                while ( numPacotes >= tamanhoJanela ) /* esta um ciclo em vez de */
-                    pausa();       /* um if, porque se receber um 1, acorda o an mesma, mas nao dec o numPacotes*/
+                while ( tamanhoJanelaUtilizado >= tamanhoJanela ) /* esta um ciclo em vez de */
+                    pausa();       /* um if, porque se receber um 1, acorda o an mesma, mas nao dec o tamanhoJanelaUtilizado*/
                 socket.send(dp);
-                numPacotes++;
+                tamanhoJanelaUtilizado++;
+                numEnviados++;
+                disparaPacoteEnviado();
             }
 
         disparaPacotesEnviados();
@@ -166,7 +175,7 @@ public class Sender extends Thread{
 
             socket.send(package1);
 
-            pausa(); /* Esperar que o servidor estabeleca a conexao com o cliente */
+            //pausa(); /* Esperar que o servidor estabeleca a conexao com o cliente */
     }
 
     private void disparaPacotesGerados(){
@@ -179,5 +188,11 @@ public class Sender extends Thread{
         SenderEvent event = new SenderEvent(this);
         
         sl.pacotesEnviados(event);
+    }
+
+    private void disparaPacoteEnviado(){
+        SenderEvent event = new SenderEvent(this);
+
+        sl.pacoteEnviado(event);
     }
 }

@@ -15,8 +15,6 @@ import Cliente.RecieverEvent;
 import Cliente.RecieverListener;
 import Cliente.SenderEvent;
 import Cliente.SenderListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -27,11 +25,13 @@ import javax.swing.JOptionPane;
 public class InterfaceCliente extends javax.swing.JDialog{
     private RecieverListener rl;
     private SenderListener sl;
+    private boolean pausado;
 
     /** Creates new form InterfaceCliente */
     public InterfaceCliente(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        pausado = false;
 
         rl = new RecieverListener() {
 
@@ -54,7 +54,7 @@ public class InterfaceCliente extends javax.swing.JDialog{
             }
 
             public void confirmacaoRecebida(RecieverEvent e) {
-
+                jLabel_ConfirmacoesRecebidas.setText("" + ControllerCliente.getConfirmacoes());
             }
 
         };
@@ -62,13 +62,19 @@ public class InterfaceCliente extends javax.swing.JDialog{
         sl = new SenderListener() {
 
             public void pacotesGerados(SenderEvent e) {
-                jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
+                Object[] packs = ControllerCliente.getPacotesEnviar();
+                jList_Pacotes.setListData(packs);
+                jLabel_TotalPacotes.setText("" + packs.length);
                 estadoSemiFinal();
             }
 
             public void pacotesEnviados(SenderEvent e) {
                         javax.swing.JOptionPane.showMessageDialog(null, "Info : "
                     + "OS pacotes foram todos enviados" , "INFO", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            public void pacoteEnviado(SenderEvent e) {
+                jLabel_TotalEnviados.setText("" + ControllerCliente.getTotalEnviados());
             }
         };
     }
@@ -254,7 +260,6 @@ public class InterfaceCliente extends javax.swing.JDialog{
             }
         });
 
-        jList_Pacotes.setForeground(new java.awt.Color(255, 0, 0));
         jScrollPane1.setViewportView(jList_Pacotes);
 
         jLabel5.setText("Total de Pacotes:");
@@ -266,8 +271,18 @@ public class InterfaceCliente extends javax.swing.JDialog{
         jLabel_ConfirmacoesRecebidas.setText("0");
 
         jButton_Pause.setText("Pause");
+        jButton_Pause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_PauseActionPerformed(evt);
+            }
+        });
 
         jButton_Stop.setText("Stop");
+        jButton_Stop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_StopActionPerformed(evt);
+            }
+        });
 
         jLabel_TotalEnviados.setText("0");
 
@@ -443,12 +458,36 @@ public class InterfaceCliente extends javax.swing.JDialog{
     private void jButton_EnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EnviarActionPerformed
         try {
             estadoFinal();
+
+            int tamanho = Integer.parseInt(jTextField_TamJanela.getText());
+
+            ControllerCliente.setTamanhoInicialPacotes(tamanho);
             ControllerCliente.sendPackages();
         } catch (InterruptedException ex) {
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton_EnviarActionPerformed
+
+    private void jButton_PauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PauseActionPerformed
+        try {
+            if (!pausado){
+                pausado = true;
+                ControllerCliente.pausaSender();
+                jButton_Pause.setText("Continue");
+            } else{
+                ControllerCliente.despausaSender();
+                jButton_Pause.setText("Pause");
+            }
+        } catch (InterruptedException ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton_PauseActionPerformed
+
+    private void jButton_StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_StopActionPerformed
+        ControllerCliente.stopSender();
+    }//GEN-LAST:event_jButton_StopActionPerformed
 
     private void estadoInicial(){
         jTextField_IP.setText("192.168.10.8");
@@ -489,6 +528,9 @@ public class InterfaceCliente extends javax.swing.JDialog{
         jButton_FileChooser.setEnabled(false);
         jTextField_TamanhoPacotes.setEnabled(false);
         jButton_GerarPacotes.setEnabled(false);
+
+        jButton_Pause.setEnabled(true);
+        jButton_Stop.setEnabled(true);
     }
 
     /**

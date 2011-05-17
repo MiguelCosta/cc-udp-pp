@@ -38,7 +38,7 @@ public class Reciever extends Thread{
 
                 switch (comPkt.getType()){
                     case 5 :
-                        //System.out.println("Package received");
+                        System.out.println("Package received");
                         Connection.aumentaNumConfirmacoes(comPkt.getNumber());
                         adicionaAoObjecto(comPkt.getNumber(),comPkt.getData());
                         break;
