@@ -29,38 +29,55 @@ public class MainCliente {
         }
     }
 
-    public static void initSender(String ip, int port, int tamanhoJanela, String toSend,
-            int lengthPacotes) throws UnknownHostException, IOException, InterruptedException{
+    public static void initSender(String ip, int port, RecieverListener rl, SenderListener sl)
+            throws UnknownHostException,
+            IOException, InterruptedException{
             /*Atribuir ip do servidor destino*/
             InetAddress addr = InetAddress.getByName(ip);
 
-            s = new Sender(socket, addr, port, tamanhoJanela, toSend, lengthPacotes); //min 128
+            r = new Reciever(socket, rl);
+            r.start();
+            s = new Sender(socket, addr, port, sl);
     }
 
-    public static void continueSender() throws InterruptedException{
-            s.start();
+    public static void setFileSender(String fileDatapath, int lengthPackages) throws IOException{
+        s.setFicheiro(fileDatapath, lengthPackages);
+    }
 
-            r = new Reciever(socket);
-            r.start();
+    public static void setTamanhoJanelaInicial(int tamanho){
+        s.setTamanhoJanelaInicial(tamanho);
+    }
+
+    public static void sendPackages() throws InterruptedException{
+            s.start();
 
             r.join();
             s.join();
     }
 
-    public static void closeSender(){
-        System.out.println("fechar ligacao");
+    public static void closeSender() throws IOException, InterruptedException{
+        s.enviaTermination();
+
         socket.close();
+    }
+
+    public static Sender getSender(){
+        return s;
+    }
+
+    public static Reciever getReciever(){
+        return r;
     }
 
     public static void desPausa(){
         s.desPausa();
     }
 
-    public static void decrementaNumPacotes(){
-        s.decrementaNumPAcotes();
+    public static void pausaSender(){
+        s.pausa();
     }
 
-    public static Sender getSender(){
-        return s;
+    public static void decrementaNumPacotes(){
+        s.decrementaNumPacotes();
     }
 }

@@ -11,6 +11,12 @@
 
 package Interfaces;
 
+import Cliente.RecieverEvent;
+import Cliente.RecieverListener;
+import Cliente.SenderEvent;
+import Cliente.SenderListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -18,24 +24,54 @@ import javax.swing.JOptionPane;
  *
  * @author goku
  */
-public class InterfaceCliente extends javax.swing.JDialog {
+public class InterfaceCliente extends javax.swing.JDialog{
+    private RecieverListener rl;
+    private SenderListener sl;
 
     /** Creates new form InterfaceCliente */
     public InterfaceCliente(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        rl = new RecieverListener() {
+
+            public void coneccaoEstabelecida(RecieverEvent e) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Info : "
+                    + "Ligação Estabelecida" , "INFO", JOptionPane.INFORMATION_MESSAGE);
+
+                estadoFicheiro();
+            }
+
+            public void terminoConeccao(RecieverEvent e) {
+                try {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Info : " +
+                            "Recebido Pedido de terminacao de ligação", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                    ControllerCliente.closeConnection();
+                } catch (Exception ex) {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Erro : " +
+                            ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            public void confirmacaoRecebida(RecieverEvent e) {
+
+            }
+
+        };
+
+        sl = new SenderListener() {
+
+            public void pacotesGerados(SenderEvent e) {
+                jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
+                estadoSemiFinal();
+            }
+
+            public void pacotesEnviados(SenderEvent e) {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Info : "
+                    + "OS pacotes foram todos enviados" , "INFO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        };
     }
-
-    public static void update(){
-    //    repaint();
-    }
-
-    @Override
-    public void repaint() {
-        super.repaint();
-    }
-
-
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -46,22 +82,22 @@ public class InterfaceCliente extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane_Pacotes = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        jTabbedPane = new javax.swing.JTabbedPane();
+        jPanel_Defs = new javax.swing.JPanel();
+        jPanel_FICH = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField_FichEnviar = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton_GerarPacotes = new javax.swing.JButton();
         jButton_FileChooser = new javax.swing.JButton();
         jTextField_TamanhoPacotes = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
+        jPanel_CON = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jTextField_IP = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jTextField_Porta = new javax.swing.JTextField();
         jButton_Ligar = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        jPanel_Pacotes = new javax.swing.JPanel();
         jButton_Enviar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList_Pacotes = new javax.swing.JList();
@@ -88,7 +124,7 @@ public class InterfaceCliente extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_FICH.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jLabel1.setText("Ficheiro a Enviar");
 
@@ -108,33 +144,33 @@ public class InterfaceCliente extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel_FICHLayout = new javax.swing.GroupLayout(jPanel_FICH);
+        jPanel_FICH.setLayout(jPanel_FICHLayout);
+        jPanel_FICHLayout.setHorizontalGroup(
+            jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_FICHLayout.createSequentialGroup()
+                .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jTextField_FichEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton_FileChooser)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField_TamanhoPacotes, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addContainerGap())
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel_FICHLayout.createSequentialGroup()
                 .addComponent(jButton_GerarPacotes)
                 .addContainerGap())
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel_FICHLayout.setVerticalGroup(
+            jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_FICHLayout.createSequentialGroup()
+                .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField_TamanhoPacotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField_FichEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton_FileChooser))
@@ -142,7 +178,7 @@ public class InterfaceCliente extends javax.swing.JDialog {
                 .addComponent(jButton_GerarPacotes))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_CON.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jLabel3.setText("IP");
 
@@ -155,32 +191,32 @@ public class InterfaceCliente extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel_CONLayout = new javax.swing.GroupLayout(jPanel_CON);
+        jPanel_CON.setLayout(jPanel_CONLayout);
+        jPanel_CONLayout.setHorizontalGroup(
+            jPanel_CONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_CONLayout.createSequentialGroup()
+                .addGroup(jPanel_CONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_CONLayout.createSequentialGroup()
+                        .addGroup(jPanel_CONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jTextField_IP, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel_CONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField_Porta, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4)))
                     .addComponent(jButton_Ligar))
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+        jPanel_CONLayout.setVerticalGroup(
+            jPanel_CONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_CONLayout.createSequentialGroup()
+                .addGroup(jPanel_CONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel_CONLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(12, 12, 12)
                         .addComponent(jTextField_Porta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGroup(jPanel_CONLayout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(12, 12, 12)
                         .addComponent(jTextField_IP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -188,31 +224,37 @@ public class InterfaceCliente extends javax.swing.JDialog {
                 .addComponent(jButton_Ligar))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel_DefsLayout = new javax.swing.GroupLayout(jPanel_Defs);
+        jPanel_Defs.setLayout(jPanel_DefsLayout);
+        jPanel_DefsLayout.setHorizontalGroup(
+            jPanel_DefsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_DefsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel_DefsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel_CON, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel_FICH, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanel_DefsLayout.setVerticalGroup(
+            jPanel_DefsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_DefsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel_CON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(45, 45, 45)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel_FICH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(65, Short.MAX_VALUE))
         );
 
-        jTabbedPane_Pacotes.addTab("Definições", jPanel1);
+        jTabbedPane.addTab("Definições", jPanel_Defs);
 
         jButton_Enviar.setText("Enviar");
+        jButton_Enviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_EnviarActionPerformed(evt);
+            }
+        });
 
+        jList_Pacotes.setForeground(new java.awt.Color(255, 0, 0));
         jScrollPane1.setViewportView(jList_Pacotes);
 
         jLabel5.setText("Total de Pacotes:");
@@ -245,25 +287,25 @@ public class InterfaceCliente extends javax.swing.JDialog {
 
         jLabel_TamJanela.setText("0");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel_PacotesLayout = new javax.swing.GroupLayout(jPanel_Pacotes);
+        jPanel_Pacotes.setLayout(jPanel_PacotesLayout);
+        jPanel_PacotesLayout.setHorizontalGroup(
+            jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_PacotesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBox_Pacotes, 0, 250, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_PacotesLayout.createSequentialGroup()
                         .addComponent(jButton_Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                         .addComponent(jButton_Pause, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39)
                         .addComponent(jButton_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel5)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel_PacotesLayout.createSequentialGroup()
                         .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jTextField_TamJanela, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -278,13 +320,13 @@ public class InterfaceCliente extends javax.swing.JDialog {
                     .addComponent(jLabel_TamJanela, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        jPanel_PacotesLayout.setVerticalGroup(
+            jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_PacotesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_PacotesLayout.createSequentialGroup()
+                        .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField_TamJanela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -309,8 +351,8 @@ public class InterfaceCliente extends javax.swing.JDialog {
                         .addComponent(jLabel_TamJanela))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton_Stop)
                         .addComponent(jButton_Pause))
                     .addComponent(jComboBox_Pacotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -318,7 +360,7 @@ public class InterfaceCliente extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jTabbedPane_Pacotes.addTab("Pacotes", jPanel2);
+        jTabbedPane.addTab("Pacotes", jPanel_Pacotes);
 
         jMenu1.setText("File");
 
@@ -337,6 +379,7 @@ public class InterfaceCliente extends javax.swing.JDialog {
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
+        estadoInicial();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -344,13 +387,13 @@ public class InterfaceCliente extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane_Pacotes, javax.swing.GroupLayout.PREFERRED_SIZE, 634, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 634, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane_Pacotes, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -372,14 +415,10 @@ public class InterfaceCliente extends javax.swing.JDialog {
 
     private void jButton_GerarPacotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_GerarPacotesActionPerformed
         try {
-            String ip = jTextField_IP.getText();
-            int port = Integer.parseInt(jTextField_Porta.getText());
-            int tamJanela = Integer.parseInt(jTextField_TamJanela.getText());
             String toSend = jTextField_FichEnviar.getText();
             int tamPacotes = Integer.parseInt(jTextField_TamanhoPacotes.getText());
 
-            ControllerCliente.criaCliente(ip, port, tamJanela, toSend, tamPacotes);
-            jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
+            ControllerCliente.setFicheiroCliente(toSend, tamPacotes);
         } catch (Exception ex) {
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
@@ -391,14 +430,65 @@ public class InterfaceCliente extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jButton_LigarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_LigarActionPerformed
-        // TODO add your handling code here:
+        try {
+            String ip = jTextField_IP.getText();
+            int port = Integer.parseInt(jTextField_Porta.getText());
+            ControllerCliente.criaCliente(ip, port, rl, sl);
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton_LigarActionPerformed
+
+    private void jButton_EnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EnviarActionPerformed
+        try {
+            estadoFinal();
+            ControllerCliente.sendPackages();
+        } catch (InterruptedException ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton_EnviarActionPerformed
 
     private void estadoInicial(){
         jTextField_IP.setText("192.168.10.8");
         jTextField_Porta.setText("4545");
 
+        jTabbedPane.setEnabledAt(1, false);
         
+        jTextField_FichEnviar.setEnabled(false);
+        jButton_FileChooser.setEnabled(false);
+        jTextField_TamanhoPacotes.setEnabled(false);
+        jButton_GerarPacotes.setEnabled(false);
+    }
+
+    private void estadoFicheiro(){
+        jTextField_IP.setEditable(false);
+        jTextField_Porta.setEditable(false);
+        jButton_Ligar.setEnabled(false);
+
+        jTextField_FichEnviar.setEnabled(true);
+        jButton_FileChooser.setEnabled(true);
+        jTextField_TamanhoPacotes.setEnabled(true);
+        jButton_GerarPacotes.setEnabled(true);
+    }
+
+    private void estadoSemiFinal(){
+        jTabbedPane.setEnabledAt(1, true);
+        jTabbedPane.setSelectedIndex(1);
+
+        jButton_Pause.setEnabled(false);
+        jButton_Stop.setEnabled(false);
+    }
+
+    private void estadoFinal(){
+        jTextField_TamJanela.setEditable(false);
+        jButton_Enviar.setEnabled(false);
+
+        jTextField_FichEnviar.setEnabled(false);
+        jButton_FileChooser.setEnabled(false);
+        jTextField_TamanhoPacotes.setEnabled(false);
+        jButton_GerarPacotes.setEnabled(false);
     }
 
     /**
@@ -446,12 +536,12 @@ public class InterfaceCliente extends javax.swing.JDialog {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel_CON;
+    private javax.swing.JPanel jPanel_Defs;
+    private javax.swing.JPanel jPanel_FICH;
+    private javax.swing.JPanel jPanel_Pacotes;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane_Pacotes;
+    private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTextField jTextField_FichEnviar;
     private javax.swing.JTextField jTextField_IP;
     private javax.swing.JTextField jTextField_Porta;
