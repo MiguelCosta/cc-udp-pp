@@ -40,7 +40,7 @@ public class Sender extends Thread{
         pacotesEnviar = new ArrayList<DatagramPacket>();
 
         criaPacotes(fileDatapath, lengthPacotes);
-        numEnviados = 0;
+        numEnviados = -1;
     }
 
     public void setTamanhoJanelaInicial(int tamanhoJanela){
@@ -52,7 +52,12 @@ public class Sender extends Thread{
     }
 
     public ArrayList getPacotesEnviar(){
-        return pacotesEnviar;
+        ArrayList ar = new ArrayList();
+
+        for ( int i = 1 ; i < pacotesEnviar.size() ; i++ )
+            ar.add(pacotesEnviar.get(i));
+
+        return ar;
     }
 
     public int getTamanhoJanela(){
