@@ -3,6 +3,7 @@ package Cliente.TimeCounter;
 import Cliente.MainCliente;
 import java.util.ArrayList;
 
+
 public class TimeCounter extends Thread {
 
     private ArrayList<Long> timeCountList;
@@ -59,12 +60,13 @@ public class TimeCounter extends Thread {
      * Trata a chegada de um novo Ack
      */
     public void newAck(int index) {
-        sampleRTT = System.currentTimeMillis() - timeCountList.get(index);
-        System.out.println("sampleRTT: " + sampleRTT);
-        timeCountList.set(index, Long.valueOf(0));
-        this.estimateRTT();
-        this.calculateDevRTT();
-        this.calculateTimeOut();
+        if (timeCountList.get(index) != -1) {
+            sampleRTT = System.currentTimeMillis() - timeCountList.get(index);
+            timeCountList.set(index, Long.valueOf(0));
+            this.estimateRTT();
+            this.calculateDevRTT();
+            this.calculateTimeOut();
+        }
     }
 
     /*
@@ -73,21 +75,18 @@ public class TimeCounter extends Thread {
     private void estimateRTT() {
         long newRTT = (long) ((1 - alpha) * estimatedRTT + alpha * sampleRTT);
         estimatedRTT = newRTT;
-        System.out.println("estimatedRRT: " + estimatedRTT);
     }
 
     /*
      * Calcula desvio padrão do RTT
      */
     private void calculateDevRTT() {
-        long newdevRTT = (long) ((1 - beta) * devRTT + beta * (sampleRTT - estimatedRTT));
+        long newdevRTT = (long) ((1 - beta) * devRTT + beta * (Math.abs(sampleRTT - estimatedRTT)));
         devRTT = newdevRTT;
-        System.out.println("devRTT: " + devRTT);
     }
 
     private void calculateTimeOut() {
-        timeout = 4*estimatedRTT + 4 * devRTT;
-        System.out.println("timeout: " + timeout);
+        timeout = estimatedRTT + 4 * devRTT;
     }
 
     @Override
@@ -99,9 +98,13 @@ public class TimeCounter extends Thread {
                     current = System.currentTimeMillis();
                     total = current - time;
                     if (total > timeout) {
+                        time = -1;
+                        //falta disparar evento do timeout |||GOKU|||
                         if (MainCliente.getSender().getTamanhoJanela() > 1) {
                             MainCliente.getSender().setTamanhoJanelaInicial(
                                     MainCliente.getSender().getTamanhoJanela() / 2);
+                            MainCliente.getSender().setTamanhoJanelaUtilizado(
+                                    MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
                         }
                     }
                 }
