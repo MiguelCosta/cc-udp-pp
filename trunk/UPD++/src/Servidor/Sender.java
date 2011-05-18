@@ -83,7 +83,7 @@ public class Sender extends Thread{
         try {
             while(!finish){
                 //while (numConfirmacoes == 0 && !finish)
-                while (confirmacoes.isEmpty() && !finish && toogle )
+                while ((confirmacoes.isEmpty() && !finish) || !toogle )
                     pausa();
                 if (!finish){
                     ComunicationPacket p = new ComunicationPacket((char) 3, confirmacoes.get(0), null);
@@ -95,6 +95,7 @@ public class Sender extends Thread{
 
                     //numConfirmacoes--;
                     confirmados.add(confirmacoes.get(0));
+                    disparaSendConfirmacao();
                     confirmacoes.remove(0);
                 }
             }
@@ -108,7 +109,7 @@ public class Sender extends Thread{
         notifyAll();
     }
 
-    private synchronized void sendConfirmacao(int i) throws IOException{
+    public synchronized void sendConfirmacao(int i) throws IOException{
         boolean found = false;
         for (int j = 0 ; j < confirmacoes.size() && !found; j++)
             if( i == confirmacoes.get(j) ){
@@ -120,6 +121,7 @@ public class Sender extends Thread{
                 System.out.println("confirmacao enviada");
 
                 confirmados.add(i);
+                disparaSendConfirmacao();
                 confirmacoes.remove(j);
                 found = true;
             }
@@ -131,5 +133,11 @@ public class Sender extends Thread{
 
     public ArrayList getConfirmados(){
         return confirmados;
+    }
+
+    private void disparaSendConfirmacao(){
+        SenderEvent event = new SenderEvent(this);
+
+        sl.confirmouPacote(event);
     }
 }

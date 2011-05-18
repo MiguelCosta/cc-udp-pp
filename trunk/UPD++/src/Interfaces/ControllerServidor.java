@@ -9,6 +9,7 @@ import Servidor.RecieverListener;
 import Servidor.SenderListener;
 import Servidor.ConnectionAccepterListener;
 import Servidor.MainServidor;
+import java.io.IOException;
 import java.net.InetAddress;
 
 /**
@@ -48,5 +49,9 @@ public class ControllerServidor {
 
     public static void setToogle(String ip,boolean b){
         MainServidor.getCa().getConnection(ip).getSender().setToogle(b);
+    }
+
+    public static void confirmaPacote(String ip, int numPacote) throws IOException{
+        MainServidor.getCa().getConnection(ip).getSender().sendConfirmacao(numPacote);
     }
 }

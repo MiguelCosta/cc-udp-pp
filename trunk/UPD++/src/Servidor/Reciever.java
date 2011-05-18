@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.ArrayList;
 import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import pacotes.ComunicationPacket;
@@ -27,8 +26,8 @@ public class Reciever extends Thread{
         objecto = new TreeMap<Integer, byte[]>();
         objectoName = "default";
         this.tamPacotes = tamPacotes;
-        numeroPacotesRecebidos = 0;
         numeroTotalPacotes = 0;
+        numeroPacotesRecebidos = 0;
         this.rl = rl;
     }
 
@@ -48,8 +47,8 @@ public class Reciever extends Thread{
                         System.out.println("Package received");
                         Connection.aumentaNumConfirmacoes(comPkt.getNumber());
                         adicionaAoObjecto(comPkt.getNumber(),comPkt.getData());
-                        disparaPacoteRecebido();
                         numeroPacotesRecebidos++;
+                        disparaPacoteRecebido();
                         break;
                     case 4 :
                         //System.out.println("Name Received");

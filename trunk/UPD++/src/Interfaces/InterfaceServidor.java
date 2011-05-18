@@ -16,6 +16,8 @@ import Servidor.ConnectionAccepterEvent;
 import Servidor.ConnectionAccepterListener;
 import Servidor.SenderEvent;
 import Servidor.SenderListener;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -42,6 +44,8 @@ public class InterfaceServidor extends javax.swing.JDialog {
                     jList_Clientes.setSelectedIndex(0);
 
                 String ip = (String) jList_Clientes.getSelectedValue();
+
+                estadoViewCliente(ip);
 
                 ControllerServidor.setToogle(ip, jToggleButton_ActConfirmacoes.isSelected());
             }
@@ -144,6 +148,11 @@ public class InterfaceServidor extends javax.swing.JDialog {
         jPanel_ClienteEspecifico.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jToggleButton_ActConfirmacoes.setText("Enviar Confirmações");
+        jToggleButton_ActConfirmacoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton_ActConfirmacoesActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Número Pacotes Total:");
 
@@ -162,6 +171,11 @@ public class InterfaceServidor extends javax.swing.JDialog {
         jLabel8.setText("Confirmados");
 
         jButton_ConfirmaPacote.setText("Corfirma Pacote");
+        jButton_ConfirmaPacote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ConfirmaPacoteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel_ClienteEspecificoLayout = new javax.swing.GroupLayout(jPanel_ClienteEspecifico);
         jPanel_ClienteEspecifico.setLayout(jPanel_ClienteEspecificoLayout);
@@ -184,12 +198,12 @@ public class InterfaceServidor extends javax.swing.JDialog {
                                 .addGap(46, 46, 46)
                                 .addComponent(jLabel_NumPacTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))))
                     .addGroup(jPanel_ClienteEspecificoLayout.createSequentialGroup()
-                        .addGroup(jPanel_ClienteEspecificoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel_ClienteEspecificoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel7)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton_ConfirmaPacote))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                            .addComponent(jButton_ConfirmaPacote, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel_ClienteEspecificoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel_ClienteEspecificoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel_ClienteEspecificoLayout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE))
@@ -360,6 +374,29 @@ public class InterfaceServidor extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jList_ClientesMouseClicked
 
+    private void jToggleButton_ActConfirmacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton_ActConfirmacoesActionPerformed
+        if (jList_Clientes.getSelectedIndices().length == 1){
+
+            String ip = (String) jList_Clientes.getSelectedValue();
+
+            ControllerServidor.setToogle(ip, jToggleButton_ActConfirmacoes.isSelected());
+        }
+    }//GEN-LAST:event_jToggleButton_ActConfirmacoesActionPerformed
+
+    private void jButton_ConfirmaPacoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ConfirmaPacoteActionPerformed
+        if (jList_NaoConfirmados.getSelectedIndices().length == 1){
+            try {
+                String ip = (String) jList_Clientes.getSelectedValue();
+                int pacote = (Integer) jList_NaoConfirmados.getSelectedValue();
+
+                ControllerServidor.confirmaPacote(ip, pacote);
+            } catch (IOException ex) {
+                javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage() ,
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton_ConfirmaPacoteActionPerformed
+
     private void estadoInicial(){
         jPanel_ClienteEspecifico.setVisible(false);
         jButton_Kick.setEnabled(false);
@@ -375,12 +412,13 @@ public class InterfaceServidor extends javax.swing.JDialog {
     }
 
     private void estadoViewCliente(String ip){
+        jButton_Kick.setEnabled(true);
         jPanel_ClienteEspecifico.setVisible(true);
 
         jList_Confirmados.setListData(ControllerServidor.getPacotesConfirmados(ip));
         jList_NaoConfirmados.setListData(ControllerServidor.getPacotesPorConfirmar(ip));
 
-        jLabel_NumPacRecebidos.setText(""+ControllerServidor.getNumPacotesTotal(ip));
+        jLabel_NumPacRecebidos.setText(""+ControllerServidor.getNumPacotesRecebidos(ip));
         jLabel_NumPacTotal.setText("" + ControllerServidor.getNumPacotesTotal(ip));
     }
 
