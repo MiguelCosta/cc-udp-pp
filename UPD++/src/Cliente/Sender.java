@@ -124,14 +124,14 @@ public class Sender extends Thread{
         System.out.println("Cria Pacotes - objecto bytes : " + objecto.length);
 
         byte[] buffer = new byte[lengthPacotes-104]; 
-        int j = 0, number = 0, num;
+        int j = 0, number = 0;
+        char num = (char) 5;
         for ( int i = 0 ; i < objecto.length ; i++ , j++ ){
             buffer[j] = objecto[i];
             if ( j == lengthPacotes-105){
-                if ( (j+1) >= objecto.length ) num = 6;
-                else num = 5;
+                if ( (j+1) >= objecto.length ) num = (char) 6;
                 //buffer[++j]='\0';
-                ComunicationPacket aux = new ComunicationPacket((char) num, number++, buffer);
+                ComunicationPacket aux = new ComunicationPacket(num, number++, buffer);
                 byte[] toSendCP = Interpreter.objectToBytes(aux);
                 DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                         addr, port);
