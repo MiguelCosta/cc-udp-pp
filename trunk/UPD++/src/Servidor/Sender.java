@@ -39,12 +39,7 @@ public class Sender extends Thread{
         try {
             sendConfirmacoes();
 
-            ComunicationPacket p = new ComunicationPacket((char) 2,-1, new byte[1]);
-            byte[] toSend = Interpreter.objectToBytes(p);
-            DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
-
-            socket.send(package1);
-            System.out.println("Terminarion sent");
+            sendTerminacao();
             socket.disconnect();
         } catch (IOException ex) {
             System.out.println("ERRO (senderServidor.run): " + ex.getMessage());
@@ -73,9 +68,11 @@ public class Sender extends Thread{
         notifyAll();
     }
 
-    public synchronized void setFinish(){
+    public synchronized void setFinish() throws IOException{
         finish = true;
         desPausa();
+
+        sendTerminacao();
     }
 
     private synchronized void sendConfirmacoes(){
@@ -125,6 +122,17 @@ public class Sender extends Thread{
                 confirmacoes.remove(j);
                 found = true;
             }
+    }
+
+    public void sendTerminacao() throws IOException{
+        ComunicationPacket p = new ComunicationPacket((char) 2, -1, null);
+        byte[] toSend = Interpreter.objectToBytes(p);
+        DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
+
+        socket.send(package1);
+        System.out.println("confirmacao enviada");
+
+        MainServidor.getCa().eliminaConnection(""+addr + " " + port);
     }
 
     public ArrayList getConfirmacoes(){

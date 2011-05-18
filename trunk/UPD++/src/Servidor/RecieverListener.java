@@ -15,6 +15,5 @@ public interface RecieverListener extends EventListener{
 
     public void recebeuPacote(RecieverEvent e);
     public void recebeuTamanhoPacotesReceber(RecieverEvent e);
-    public void recebeuTerminoLigacao(RecieverEvent e);
     
 }

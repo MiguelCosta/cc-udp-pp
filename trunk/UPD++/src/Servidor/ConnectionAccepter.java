@@ -2,7 +2,6 @@ package Servidor;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import pacotes.ComunicationPacket;
@@ -75,9 +74,9 @@ public class ConnectionAccepter extends Thread{
         }
     }
 
-    public synchronized static void eliminaConnection(String ip){
-
+    public synchronized void eliminaConnection(String ip){
         connectionList.remove(ip);
+        disparaClienteDesligado();
 
         System.out.println("Ligacao terminada");
     }
@@ -86,6 +85,12 @@ public class ConnectionAccepter extends Thread{
         ConnectionAccepterEvent event = new ConnectionAccepterEvent(this);
 
         cal.clienteLigouse(event);
+    }
+
+    private void disparaClienteDesligado(){
+        ConnectionAccepterEvent event = new ConnectionAccepterEvent(this);
+
+        cal.recebeuTerminoLigacao(event);
     }
 
     public Object[] getClientes(){

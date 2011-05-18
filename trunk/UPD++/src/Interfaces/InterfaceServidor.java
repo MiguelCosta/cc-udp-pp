@@ -49,6 +49,10 @@ public class InterfaceServidor extends javax.swing.JDialog {
 
                 ControllerServidor.setToogle(ip, jToggleButton_ActConfirmacoes.isSelected());
             }
+
+            public void recebeuTerminoLigacao(ConnectionAccepterEvent e) {
+                jList_Clientes.setListData(ControllerServidor.getClientes());
+            }
         };
 
         rl = new RecieverListener() {
@@ -67,10 +71,6 @@ public class InterfaceServidor extends javax.swing.JDialog {
 
                 if ( ip != null )
                     jLabel_NumPacRecebidos.setText(""+ControllerServidor.getNumPacotesTotal(ip));
-            }
-
-            public void recebeuTerminoLigacao(Servidor.RecieverEvent e) {
-                jList_Clientes.setListData(ControllerServidor.getClientes());
             }
         };
 
@@ -263,6 +263,11 @@ public class InterfaceServidor extends javax.swing.JDialog {
         });
 
         jButton_Kick.setText("Kick");
+        jButton_Kick.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_KickActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("Tam. Pacotes");
 
@@ -397,6 +402,19 @@ public class InterfaceServidor extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jButton_ConfirmaPacoteActionPerformed
 
+    private void jButton_KickActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_KickActionPerformed
+        if (jList_Clientes.getSelectedIndices().length == 1){
+            try {
+                String ip = (String) jList_Clientes.getSelectedValue();
+
+                ControllerServidor.kickCliente(ip);
+            } catch (IOException ex) {
+                javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage() ,
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton_KickActionPerformed
+
     private void estadoInicial(){
         jPanel_ClienteEspecifico.setVisible(false);
         jButton_Kick.setEnabled(false);
@@ -430,6 +448,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
             public void run() {
                 InterfaceServidor dialog = new InterfaceServidor(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
                     }

@@ -1,5 +1,6 @@
 package Servidor;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -26,16 +27,10 @@ public class Connection{
 
             reciever.join();
             sender.join();
-            
-            ConnectionAccepter.eliminaConnection(ip);
     }
 
     public static void aumentaNumConfirmacoes(int number){
         sender.aumentaNumConfirmacoes(number);
-    }
-
-    public static void setFinish(){
-        sender.setFinish();
     }
 
     public DatagramSocket getSocket(){
