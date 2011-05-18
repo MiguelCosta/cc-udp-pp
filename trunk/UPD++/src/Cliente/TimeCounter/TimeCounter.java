@@ -19,7 +19,7 @@ public class TimeCounter extends Thread {
      */
     public TimeCounter(int packetsNumber, Long estimatedRTT) {
         this.timeCountList = new ArrayList<Long>();
-        for (int i = 0; i < packetsNumber+1; i++) {
+        for (int i = 0; i < packetsNumber + 1; i++) {
             timeCountList.add(Long.valueOf(0));
         }
         this.estimatedRTT = estimatedRTT;
@@ -43,9 +43,9 @@ public class TimeCounter extends Thread {
     }
 
     public void setTimeCountList(int index, long value) {
-
-        timeCountList.set(index, value);
-
+        synchronized (timeCountList) {
+            timeCountList.set(index, value);
+        }
     }
 
     /*
@@ -60,7 +60,7 @@ public class TimeCounter extends Thread {
      */
     public void newAck(int index) {
         sampleRTT = System.currentTimeMillis() - timeCountList.get(index);
-        System.out.println("sampleRTT: "+sampleRTT);
+        System.out.println("sampleRTT: " + sampleRTT);
         timeCountList.set(index, Long.valueOf(0));
         this.estimateRTT();
         this.calculateDevRTT();
@@ -73,7 +73,7 @@ public class TimeCounter extends Thread {
     private void estimateRTT() {
         long newRTT = (long) ((1 - alpha) * estimatedRTT + alpha * sampleRTT);
         estimatedRTT = newRTT;
-        System.out.println("estimatedRRT: "+estimatedRTT);
+        System.out.println("estimatedRRT: " + estimatedRTT);
     }
 
     /*
@@ -82,12 +82,12 @@ public class TimeCounter extends Thread {
     private void calculateDevRTT() {
         long newdevRTT = (long) ((1 - beta) * devRTT + beta * (sampleRTT - estimatedRTT));
         devRTT = newdevRTT;
-        System.out.println("devRTT: "+devRTT);
+        System.out.println("devRTT: " + devRTT);
     }
 
     private void calculateTimeOut() {
         timeout = estimatedRTT + 4 * devRTT;
-        System.out.println("timeout: "+timeout);
+        System.out.println("timeout: " + timeout);
     }
 
     @Override
