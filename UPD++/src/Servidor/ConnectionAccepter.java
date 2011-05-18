@@ -3,6 +3,10 @@ package Servidor;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import pacotes.ComunicationPacket;
@@ -11,65 +15,83 @@ import pacotes.Interpreter;
 /*Adiciona à Lista de Ligações, novas ligações*/
 public class ConnectionAccepter extends Thread{
 
-    private static TreeMap connectionList;
-    private ConnectionAccepterListener cal;
-    private int i;
+    private DatagramSocket socketLigacoes;
+
+    private int numMaxConnects;
     private int tamPacotes;
+    
+    private ConnectionAccepterListener cal;
     private RecieverListener rl;
     private SenderListener sl;
 
-    public ConnectionAccepter(int numeroMaxConnects, ConnectionAccepterListener cal,
-            int tamPacotes, RecieverListener rl, SenderListener sl) {
-       connectionList = new TreeMap<String,Connection>();
-       this.cal = cal;
-       i = 0;
-       this.tamPacotes = tamPacotes;
-       this.rl = rl;
-       this.sl = sl;
+    private TreeMap connectionList;
+    private ArrayList portasUtilizadas;
+    
+    public ConnectionAccepter(int numeroMaxConnects, int tamPacotes, int portaLigacoes,
+            ConnectionAccepterListener cal,RecieverListener rl, SenderListener sl)
+            throws SocketException {
+
+        socketLigacoes = new DatagramSocket(portaLigacoes);
+
+        numMaxConnects = numeroMaxConnects;
+        this.tamPacotes = tamPacotes;
+
+        this.cal = cal;
+        this.rl = rl;
+        this.sl = sl;
+
+        connectionList = new TreeMap<String,Connection>();
+        portasUtilizadas = new ArrayList<Integer>();
+        portasUtilizadas.add(portaLigacoes);
     }
 
     @Override
     public void run(){
         try {
-            DatagramSocket newSkt = new DatagramSocket(4545);
             while(true){
-                byte[] buffer = new byte[256];
-                DatagramPacket newPkt = new DatagramPacket(buffer, buffer.length);
-                newSkt.receive(newPkt);
+                byte[] buffer = new byte[tamPacotes];
+                DatagramPacket pedido = new DatagramPacket(buffer, buffer.length);
+                socketLigacoes.receive(pedido);
 
-                /*Transformar o array de bytes num objecto*/
-                ComunicationPacket comPkt = (ComunicationPacket) Interpreter.bytesToObject(newPkt.getData());
+                /* Transformar o array de bytes num objecto */
+                ComunicationPacket comPkt = (ComunicationPacket)
+                        Interpreter.bytesToObject(pedido.getData());
 
+                /* Verificar se o pacote recebido é de pedido de ligação */
                 switch (comPkt.getType()){
                     case 1 :
-                        System.out.println("The client " + newPkt.getAddress() + " requested connection.\n");
-                        System.out.println("" + newPkt.getAddress() + " " + newPkt.getPort());
-                        Connection newCnt = new Connection(newPkt.getAddress().toString()
-                                +" "+newPkt.getPort(),newSkt,newPkt.getAddress(),
-                                newPkt.getPort(),tamPacotes, rl, sl);
+                        if ( connectionList.size() > numMaxConnects ){
+                            enviaNotAccepted(pedido.getAddress(),pedido.getPort());
+                        } else {
 
-                        /*Adicionar a Ligacao à lista de ligações*/
-                        connectionList.put(newPkt.getAddress().toString() + " " +
-                                newPkt.getPort(), newCnt);
-                        disparaClienteLigouse();
+                            /* Criar novo socket para a ligação (com nova porta) */
+                            DatagramSocket ds = criaSocketNovo();
 
-                        /*Enviar confirmação de ligacão e mostrar uma frase na consola a indicar que já se ligou*/
-                        ComunicationPacket p = new ComunicationPacket((char)1,-1, null);
-                        byte[] toSend = Interpreter.objectToBytes(p);
-                        DatagramPacket package1 = new DatagramPacket(toSend,
-                                toSend.length, newPkt.getAddress(), newPkt.getPort());
+    System.out.println("The client " + pedido.getAddress() + " requested connection.\n");
+    System.out.println("" + pedido.getAddress() + " " + pedido.getPort());
 
-                        newSkt.send(package1);
+                            String ip = pedido.getAddress().toString() + " " + pedido.getPort();
 
-                        newCnt.main();
+                            Connection newCon = new Connection(ip, ds, pedido.getAddress(),
+                                    pedido.getPort(), tamPacotes, rl, sl);
+
+                            /*Adicionar a Ligacao à lista de ligações*/
+                            connectionList.put(ip, newCon);
+                            disparaClienteLigouse();
+
+                            /*Enviar confirmação de ligacão e mostrar uma frase na consola a indicar que já se ligou*/
+                            newCon.getSender().sendConfirmacaoLigacao();
+
+                            newCon.main();
+                        }
                         break;
-
                     default :
                         javax.swing.JOptionPane.showMessageDialog(null, "Pacote "
                                 + "Recebido no lugar Errado", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } 
         } catch (Exception ex) {
+            System.out.println("Erro ConnectionAccepterRun : " + ex.getMessage());
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ConnectionAccepterRun): "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -77,8 +99,8 @@ public class ConnectionAccepter extends Thread{
 
     public synchronized void eliminaConnection(String ip) throws IOException{
 
-        if ( getConnection(ip).getReciever() != null )
-            getConnection(ip).getReciever().setFinish();
+        Connection c = (Connection) connectionList.get(ip);
+        c.endConnection();
 
         connectionList.remove(ip);
         disparaClienteDesligado();
@@ -104,5 +126,35 @@ public class ConnectionAccepter extends Thread{
 
     public Connection getConnection(String ip){
         return (Connection) connectionList.get(ip);
+    }
+
+    /* Cria socket novo, com porta ainda não utilizada */
+    private DatagramSocket criaSocketNovo() throws SocketException{
+        DatagramSocket ds = null;
+        boolean found = true;
+        int rand = 1024;
+        Random r = new Random();
+
+        while(found){
+            rand = r.nextInt()%(65535-1024) + 1024;
+
+            found = false;
+            for ( int i = 0 ; i < portasUtilizadas.size() && !found ; i++ )
+                if (rand == portasUtilizadas.get(i))
+                    found = true;
+        }
+        
+        ds = new DatagramSocket(rand);
+        portasUtilizadas.add(rand);
+
+        return ds;
+    }
+
+    private void enviaNotAccepted(InetAddress addr, int port) throws IOException{
+        ComunicationPacket p = new ComunicationPacket((char) 2, -1, null);
+        byte[] toSend = Interpreter.objectToBytes(p);
+        DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
+
+        socketLigacoes.send(package1);
     }
 }

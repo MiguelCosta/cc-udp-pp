@@ -1,36 +1,38 @@
 package Servidor;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class Connection{
 
-    private String ip;
     private DatagramSocket socket;
 
     private static Reciever reciever;
     private static Sender sender;
 
-
     Connection(String ip, DatagramSocket socket, InetAddress addr, int port,
-            int tamPacotes, RecieverListener rl, SenderListener sl){
-        this.ip = ip;
+            int tamPacotes, RecieverListener rl, SenderListener sl) {
         this.socket=socket;
-        reciever=new Reciever(socket,tamPacotes, rl);
-        sender= new Sender(socket,addr,port,sl);
+        reciever=new Reciever(socket,tamPacotes,ip, rl);
+        sender= new Sender(socket,addr,port,ip,sl);
     }
 
-    public void main() throws InterruptedException{
-            reciever.start();
-            sender.start();
-
-            reciever.join();
-            sender.join();
-
-            System.out.println("Acabou esta ligacao");
+    public void main(){
+        reciever.start();
+        sender.start();
     }
 
-    public static void aumentaNumConfirmacoes(int number){
+    public void endConnection() throws IOException{
+        if (reciever.isAlive())
+            reciever.setFinish();
+        if (sender.isAlive())
+            sender.setFinish();
+
+        System.out.printf("Coneccao Terminada");
+    }
+
+    public void aumentaNumConfirmacoes(int number){
         sender.aumentaNumConfirmacoes(number);
     }
 

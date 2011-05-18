@@ -12,6 +12,7 @@ import pacotes.Interpreter;
 public class Reciever extends Thread{
 
     private DatagramSocket socket;
+    private String ip;
     private boolean finish;
     private TreeMap<Integer,byte[]> objecto;
     private String objectoName;
@@ -20,15 +21,19 @@ public class Reciever extends Thread{
     private int numeroPacotesRecebidos;
     private RecieverListener rl;
 
-    Reciever(DatagramSocket socket, int tamPacotes, RecieverListener rl){
+    Reciever(DatagramSocket socket, int tamPacotes, String ip, RecieverListener rl){
         this.socket=socket;
+        this.ip = ip;
+        this.tamPacotes = tamPacotes;
+        this.rl = rl;
+
         finish = false;
+
         objecto = new TreeMap<Integer, byte[]>();
         objectoName = "default";
-        this.tamPacotes = tamPacotes;
+        
         numeroTotalPacotes = 0;
         numeroPacotesRecebidos = 0;
-        this.rl = rl;
     }
 
     @Override
@@ -45,21 +50,22 @@ public class Reciever extends Thread{
                 switch (comPkt.getType()){
                     case 5 :
                         System.out.println("Package received");
-                        Connection.aumentaNumConfirmacoes(comPkt.getNumber());
+                        MainServidor.getCa().getConnection(ip).getSender().
+                                aumentaNumConfirmacoes(comPkt.getNumber());
                         adicionaAoObjecto(comPkt.getNumber(),comPkt.getData());
                         numeroPacotesRecebidos++;
                         disparaPacoteRecebido();
                         break;
                     case 4 :
-                        //System.out.println("Name Received");
                         objectoName = (String) Interpreter.bytesToObject(comPkt.getData());
                         numeroTotalPacotes = comPkt.getNumber();
+                        disparaNumTotalPacotes();
+                        break;
+                    case 6 :
+                        criaObjectoFinal();
                         break;
                     case 2 :
-                        //System.out.println("Termination received");
-                        criaObjectoFinal();
-                        MainServidor.getCa().getConnection(newPkt.getAddress() +
-                                " " + newPkt.getPort()).getSender().setFinish();
+                        MainServidor.getCa().eliminaConnection(ip);
                         finish = true;
                         break;
                     default:
@@ -67,6 +73,7 @@ public class Reciever extends Thread{
                     + "Pacote Desconhecido" , "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            System.out.println("Reciever Acabado!");
         } catch (Exception ex) {
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ReceiverServidor.run): "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
