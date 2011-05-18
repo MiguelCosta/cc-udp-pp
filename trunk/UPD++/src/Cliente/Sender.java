@@ -40,7 +40,7 @@ public class Sender extends Thread{
         pacotesEnviar = new ArrayList<DatagramPacket>();
 
         criaPacotes(fileDatapath, lengthPacotes);
-        MainCliente.initTimeCounter();
+        
         numEnviados = -1;
     }
 
@@ -173,6 +173,7 @@ public class Sender extends Thread{
     }
 
     private synchronized void enviaPacotes() throws IOException, InterruptedException{
+        MainCliente.initTimeCounter();
         System.out.println("Num Pacotes: " + (pacotesEnviar.size()-1));
             int i=0;
             for (DatagramPacket dp : pacotesEnviar){
