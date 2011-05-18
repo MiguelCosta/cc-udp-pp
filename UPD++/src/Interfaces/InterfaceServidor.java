@@ -71,7 +71,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
                 String ip = (String) jList_Clientes.getSelectedValue();
 
                 if ( ip != null )
-                    jLabel_NumPacRecebidos.setText(""+ControllerServidor.getNumPacotesTotal(ip));
+                    jLabel_NumPacTotal.setText(""+ControllerServidor.getNumPacotesTotal(ip));
             }
         };
 
