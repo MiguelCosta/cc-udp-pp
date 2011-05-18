@@ -18,14 +18,17 @@ public class TimeCounter extends Thread {
      * Recebe array de tempos dos pacotes, o RTT
      */
     public TimeCounter(int packetsNumber, Long estimatedRTT) {
-        this.timeCountList = new ArrayList<Long>(packetsNumber);
-        for (long l : timeCountList) {
-            l = 0;
+        this.timeCountList = new ArrayList<Long>();
+        for (int i = 0; i < packetsNumber+1; i++) {
+            timeCountList.add(Long.valueOf(0));
         }
         this.estimatedRTT = estimatedRTT;
         this.alpha = (float) 0.125;
         this.beta = (float) 0.25;
         this.keeprunning = true;
+        System.out.println("estimated: " + this.estimatedRTT);
+        System.out.println("criou o timecounter! tamanho: " + timeCountList.size() + "" + packetsNumber);
+
 
     }
 
@@ -40,9 +43,9 @@ public class TimeCounter extends Thread {
     }
 
     public void setTimeCountList(int index, long value) {
-        synchronized (timeCountList.get(index)) {
-            timeCountList.set(index, value);
-        }
+
+        timeCountList.set(index, value);
+
     }
 
     /*
@@ -57,6 +60,7 @@ public class TimeCounter extends Thread {
      */
     public void newAck(int index) {
         sampleRTT = System.currentTimeMillis() - timeCountList.get(index);
+        System.out.println("sampleRTT: "+sampleRTT);
         timeCountList.set(index, Long.valueOf(0));
         this.estimateRTT();
         this.calculateDevRTT();
@@ -69,6 +73,7 @@ public class TimeCounter extends Thread {
     private void estimateRTT() {
         long newRTT = (long) ((1 - alpha) * estimatedRTT + alpha * sampleRTT);
         estimatedRTT = newRTT;
+        System.out.println("estimatedRRT: "+estimatedRTT);
     }
 
     /*
@@ -77,17 +82,12 @@ public class TimeCounter extends Thread {
     private void calculateDevRTT() {
         long newdevRTT = (long) ((1 - beta) * devRTT + beta * (sampleRTT - estimatedRTT));
         devRTT = newdevRTT;
+        System.out.println("devRTT: "+devRTT);
     }
 
     private void calculateTimeOut() {
         timeout = estimatedRTT + 4 * devRTT;
-    }
-    
-    public void startCounter(int index){
-      timeCountList.set(index, System.currentTimeMillis());
-    }
-    public void stopCounter(int index){
-        timeCountList.set(index, Long.valueOf(0));
+        System.out.println("timeout: "+timeout);
     }
 
     @Override
@@ -99,8 +99,10 @@ public class TimeCounter extends Thread {
                     current = System.currentTimeMillis();
                     total = current - time;
                     if (total > timeout) {
-                        MainCliente.getSender().setTamanhoJanelaInicial(
-                                MainCliente.getSender().getTamanhoJanela() / 2);
+                        if (MainCliente.getSender().getTamanhoJanela() > 1) {
+                            MainCliente.getSender().setTamanhoJanelaInicial(
+                                    MainCliente.getSender().getTamanhoJanela() / 2);
+                        }
                     }
                 }
             }

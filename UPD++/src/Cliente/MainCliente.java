@@ -64,6 +64,7 @@ public class MainCliente {
         r.join();
         s.join();
         s.enviaTermination();
+        t.stoprunning();
 
         socket.close();
     }

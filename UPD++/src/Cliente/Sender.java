@@ -40,11 +40,13 @@ public class Sender extends Thread{
         pacotesEnviar = new ArrayList<DatagramPacket>();
 
         criaPacotes(fileDatapath, lengthPacotes);
+        MainCliente.initTimeCounter();
         numEnviados = -1;
     }
 
     public void setTamanhoJanelaInicial(int tamanhoJanela){
         this.tamanhoJanela = tamanhoJanela;
+        System.out.println("Tamanho janela: "+ tamanhoJanela);
     }
 
     public int getTotalPackages(){
@@ -124,7 +126,6 @@ public class Sender extends Thread{
                 j = -1;
             }
         }
-
         if (j != 0) {
             byte[] buffer2 = new byte[j];
             for( int i = 0 ; i < j ; i++ )
@@ -136,7 +137,6 @@ public class Sender extends Thread{
 
             pacotesEnviar.add(pacote);
         }
-        MainCliente.initTimeCounter();
         disparaPacotesGerados();
     }
 
@@ -167,7 +167,7 @@ public class Sender extends Thread{
                 socket.send(dp);
                 tamanhoJanelaUtilizado++;
                 numEnviados++;
-                MainCliente.getTimeCounter().startCounter(i);
+                MainCliente.getTimeCounter().setTimeCountList(i, System.currentTimeMillis());
                 disparaPacoteEnviado();
                 i++;
             }
