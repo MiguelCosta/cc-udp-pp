@@ -3,7 +3,6 @@ package Cliente.TimeCounter;
 import Cliente.MainCliente;
 import java.util.ArrayList;
 
-
 public class TimeCounter extends Thread {
 
     private ArrayList<Long> timeCountList;
@@ -61,6 +60,8 @@ public class TimeCounter extends Thread {
         if (timeCountList.get(index) != -1) {
             sampleRTT = System.currentTimeMillis() - timeCountList.get(index);
             timeCountList.set(index, Long.valueOf(0));
+            MainCliente.getSender().setTamanhoJanelaUtilizado(
+                    MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
             this.estimateRTT();
             this.calculateDevRTT();
             this.calculateTimeOut();
@@ -92,24 +93,25 @@ public class TimeCounter extends Thread {
         Long current, total, time;
         int i;
         while (keeprunning) {
-            for (i=0; i< timeCountList.size();i++) {
-                time=timeCountList.get(i);
+            for (i = 0; i < timeCountList.size(); i++) {
+                time = timeCountList.get(i);
                 if (time != 0 && time != -1) {
                     current = System.currentTimeMillis();
                     total = current - time;
                     if (total > timeout) {
                         lostPackets++;
-                        System.out.print("RTT: "+total+" || timeout: "+timeout);
-                        System.out.println(" || Pacotes perdidos: "+lostPackets);
-                        timeCountList.set(i, Long.valueOf(-1)); 
+                        timeCountList.set(i, Long.valueOf(-1));
+                        MainCliente.getSender().setTamanhoJanelaUtilizado(
+                                    MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
+                        MainCliente.desPausa();
+                        System.out.print("RTT: " + total + " || timeout: " + timeout);
+                        System.out.println(" || Pacotes perdidos: " + lostPackets);
                         System.out.println(" || TimeOut : " + i);
+                        System.out.println(" || Tamanho janela utilizado :" + MainCliente.getSender().getTamanhoJanelUtilizado());
                         //falta disparar evento do timeout |||GOKU|||
                         if (MainCliente.getSender().getTamanhoJanela() > 1) {
                             MainCliente.getSender().setTamanhoJanelaInicial(
                                     MainCliente.getSender().getTamanhoJanela() / 2);
-                            MainCliente.getSender().setTamanhoJanelaUtilizado(
-                                    MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
-                            
                         }
                     }
                 }

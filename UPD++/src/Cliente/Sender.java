@@ -179,7 +179,7 @@ public class Sender extends Thread{
                 numEnviados++;
                 disparaPacoteEnviado();
                 i++;
-                System.out.println(" || Enviado : " + i);
+                System.out.println(" || Enviado : " + i + " || Tamanho janela utilizado :" + tamanhoJanelaUtilizado);
             }
 
         disparaPacotesEnviados();
