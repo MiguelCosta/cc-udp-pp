@@ -1,6 +1,7 @@
 package Servidor;
 
 import Interfaces.InterfaceServidor;
+import java.io.IOException;
 import java.net.SocketException;
 
 public class MainServidor {
@@ -22,8 +23,11 @@ public class MainServidor {
         ca.start();
     }
 
-    public static void desligaServidor() throws InterruptedException{
-        ca.join();
+    public static void desligaServidor() throws InterruptedException, IOException{
+        for ( Object s : ca.getClientes())
+            ca.eliminaConnection((String) s);
+
+        ca.stop();
     }
 
     public static ConnectionAccepter getCa(){

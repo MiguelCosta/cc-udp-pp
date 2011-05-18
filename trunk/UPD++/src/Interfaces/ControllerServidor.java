@@ -23,7 +23,7 @@ public class ControllerServidor {
         MainServidor.iniciaServidor(numConections, tamPacotes, portaLigacoes, cal, rl, sl);
     }
 
-    public static void desligaServidor() throws InterruptedException{
+    public static void desligaServidor() throws InterruptedException, IOException {
         MainServidor.desligaServidor();
     }
 
@@ -56,6 +56,6 @@ public class ControllerServidor {
     }
 
     public static void kickCliente(String ip) throws IOException{
-        MainServidor.getCa().getConnection(ip).getSender().setFinish();
+        MainServidor.getCa().eliminaConnection(ip);
     }
 }

@@ -61,8 +61,6 @@ public class Sender extends Thread{
         DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
 
         socket.send(package1);
-
-        MainServidor.getCa().eliminaConnection(ip);
     }
 
     private synchronized void sendConfirmacoes() throws InterruptedException{

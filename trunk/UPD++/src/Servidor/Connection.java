@@ -24,10 +24,8 @@ public class Connection{
     }
 
     public void endConnection() throws IOException{
-        if (reciever.isAlive())
-            reciever.setFinish();
-        if (sender.isAlive())
-            sender.setFinish();
+        reciever.setFinish();
+        sender.setFinish();
 
         System.out.printf("Coneccao Terminada");
     }
