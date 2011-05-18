@@ -62,6 +62,12 @@ public class Reciever extends Thread{
                         disparaNumTotalPacotes();
                         break;
                     case 6 :
+                        System.out.println("Package received");
+                        MainServidor.getCa().getConnection(ip).getSender().
+                                aumentaNumConfirmacoes(comPkt.getNumber());
+                        adicionaAoObjecto(comPkt.getNumber(),comPkt.getData());
+                        numeroPacotesRecebidos++;
+                        disparaPacoteRecebido();
                         criaObjectoFinal();
                         break;
                     case 2 :

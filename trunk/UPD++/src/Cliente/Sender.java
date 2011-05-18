@@ -53,6 +53,10 @@ public class Sender extends Thread{
         this.tamanhoJanelaUtilizado=tamanhoJanelaUtilizado;
     }
 
+    public void setNewPort(int port){
+        this.port = port;
+    }
+
     public int getTotalPackages(){
         return tamanhoJanelaUtilizado;
     }
@@ -120,12 +124,14 @@ public class Sender extends Thread{
         System.out.println("Cria Pacotes - objecto bytes : " + objecto.length);
 
         byte[] buffer = new byte[lengthPacotes-104]; 
-        int j = 0, number = 0;
+        int j = 0, number = 0, num;
         for ( int i = 0 ; i < objecto.length ; i++ , j++ ){
             buffer[j] = objecto[i];
             if ( j == lengthPacotes-105){
+                if ( (j+1) >= objecto.length ) num = 6;
+                else num = 5;
                 //buffer[++j]='\0';
-                ComunicationPacket aux = new ComunicationPacket((char) 5, number++, buffer);
+                ComunicationPacket aux = new ComunicationPacket((char) num, number++, buffer);
                 byte[] toSendCP = Interpreter.objectToBytes(aux);
                 DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                         addr, port);
@@ -138,7 +144,7 @@ public class Sender extends Thread{
             byte[] buffer2 = new byte[j];
             for( int i = 0 ; i < j ; i++ )
                 buffer2[i] = buffer[i];
-            ComunicationPacket aux = new ComunicationPacket((char) 5, number, buffer2);
+            ComunicationPacket aux = new ComunicationPacket((char) 6, number, buffer2);
             byte[] toSendCP = Interpreter.objectToBytes(aux);
             DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                     addr, port);
