@@ -5,12 +5,25 @@ A ligação é iniciada quando um cliente pede ao servidor para se connectar.
 O tamanho da janela é iniciado a 7.
 
 - CONTROLO DE CONGESTÃO
-O controlo de congestão vai ser feita através de um timeout, em que o servidor se não receber a notificação a dizer que o pacote foi recebido,
-vai diminuir o tamanho da janela.
+O controlo de congestão vai ser feita através de um timeout, em que o servidor
+se não receber a notificação a dizer que o pacote foi recebido,vai diminuir o
+tamanho da janela.
 O tamanho da janela volta ao normal se não ocorrerem timout's N vezes.
 
 - PERDA DE PACOTES
-Quando um cliente pede um pacote e não o recebe, notifica o servidor que não recebeu nada.
+Quando um cliente pede um pacote e não o recebe, notifica o servidor que não
+recebeu nada.
 
 - FIM DE LIGAÇÃO
-A ligação é terminada quando é solicitada pelo cliente, ou automaticamente quando passado algum tempo nada é enviado para o cliente.
+A ligação é terminada quando é solicitada pelo cliente, ou automaticamente quando
+passado algum tempo nada é enviado para o cliente.
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+
+CENAS QUE AINDA FALTAM FAZER:
+
+Servidor nao consegue colocar ter dois clientes com o mesmo ip:
+    - problema, uma vez que é criada a ligacao

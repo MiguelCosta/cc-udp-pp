@@ -114,4 +114,8 @@ public class Reciever extends Thread{
     public int getNumeroPacotesRecebidos(){
         return numeroPacotesRecebidos;
     }
+
+    public synchronized void setFinish(){
+        finish = true;
+    }
 }
