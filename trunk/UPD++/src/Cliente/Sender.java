@@ -67,7 +67,7 @@ public class Sender extends Thread{
     public ArrayList getPacotesEnviar(){
         ArrayList ar = new ArrayList();
 
-        for ( int i = 0 ; i < (pacotesEnviar.size() - 1) ; i++ )
+        for ( int i = 1 ; i < pacotesEnviar.size() ; i++ )
             ar.add(pacotesEnviar.get(i));
 
         return ar;
@@ -118,11 +118,13 @@ public class Sender extends Thread{
 
         byte[] buffer = new byte[lengthPacotes-104]; 
         int j = 0, number = 0;
+        char num = (char) 5;
         for ( int i = 0 ; i < objecto.length ; i++ , j++ ){
             buffer[j] = objecto[i];
             if ( j == lengthPacotes-105){
+                if ( (j+1) >= objecto.length ) num = (char) 6;
                 //buffer[++j]='\0';
-                ComunicationPacket aux = new ComunicationPacket((char) 5, number++, buffer);
+                ComunicationPacket aux = new ComunicationPacket(num, number++, buffer);
                 byte[] toSendCP = Interpreter.objectToBytes(aux);
                 DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                         addr, port);
@@ -135,7 +137,7 @@ public class Sender extends Thread{
             byte[] buffer2 = new byte[j];
             for( int i = 0 ; i < j ; i++ )
                 buffer2[i] = buffer[i];
-            ComunicationPacket aux = new ComunicationPacket((char) 5, number, buffer2);
+            ComunicationPacket aux = new ComunicationPacket((char) 6, number, buffer2);
             byte[] toSendCP = Interpreter.objectToBytes(aux);
             DatagramPacket pacote = new DatagramPacket(toSendCP, toSendCP.length,
                     addr, port);
@@ -151,7 +153,7 @@ public class Sender extends Thread{
         DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length,
                 addr, port);
 
-        pacotesEnviar.add(package1);
+        pacotesEnviar.add(0, package1);
 
         disparaPacotesGerados();
     }
