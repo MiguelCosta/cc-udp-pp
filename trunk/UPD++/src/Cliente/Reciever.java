@@ -45,7 +45,7 @@ public class Reciever extends Thread {
                         MainCliente.getTimeCounter().newAck(comPkt.getNumber());
                         MainCliente.desPausa();
 
-                        confirmacoesRecebidas++;
+                        
                         disparaConfirmacaoRecebida();
                         System.out.println(" || Confirmacao recebida - " + comPkt.getNumber());
 
@@ -67,6 +67,9 @@ public class Reciever extends Thread {
         return confirmacoesRecebidas;
     }
 
+    public void setConfirmacoesRecebidas(int i){
+        confirmacoesRecebidas=i;
+    }
     private void disparaConeccaoEstabelecida() {
         RecieverEvent event = new RecieverEvent(this);
 

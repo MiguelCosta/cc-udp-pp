@@ -62,6 +62,8 @@ public class TimeCounter extends Thread {
             timeCountList.set(index, Long.valueOf(0));
             MainCliente.getSender().setTamanhoJanelaUtilizado(
                     MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
+            MainCliente.getReciever().setConfirmacoesRecebidas(
+                    MainCliente.getReciever().getConfirmacoesRecebidas()+1);
             this.estimateRTT();
             this.calculateDevRTT();
             this.calculateTimeOut();
@@ -85,7 +87,7 @@ public class TimeCounter extends Thread {
     }
 
     private void calculateTimeOut() {
-        timeout = estimatedRTT + 4 * devRTT;
+        timeout = 4 * estimatedRTT + 4 * devRTT;
     }
 
     @Override
