@@ -6,13 +6,14 @@ import javax.swing.JOptionPane;
 import pacotes.ComunicationPacket;
 import pacotes.Interpreter;
 
-public class Reciever extends Thread{
+public class Reciever extends Thread {
+
     private DatagramSocket socket;
     private boolean finish;
     private RecieverListener rl;
     private int confirmacoesRecebidas;
 
-    public Reciever(DatagramSocket socket, RecieverListener rl){
+    public Reciever(DatagramSocket socket, RecieverListener rl) {
         this.socket = socket;
         finish = false;
         this.rl = rl;
@@ -20,7 +21,7 @@ public class Reciever extends Thread{
     }
 
     @Override
-    public void run(){
+    public void run() {
         try {
             while (!finish) {
                 byte[] buffer = new byte[256];
@@ -28,41 +29,44 @@ public class Reciever extends Thread{
                 socket.receive(newPkt);
 
                 ComunicationPacket comPkt = (ComunicationPacket) Interpreter.bytesToObject(newPkt.getData());
-                    System.out.println("recebeu");
                 switch (comPkt.getType()) {
-                    case 1 :
-                        MainCliente.firstRTT=System.currentTimeMillis() - MainCliente.firstRTT;
+                    case 1:
+                        MainCliente.firstRTT = System.currentTimeMillis() - MainCliente.firstRTT;
                         MainCliente.desPausa();
                         disparaConeccaoEstabelecida();
                         break;
-                    case 2 :
+                    case 2:
                         MainCliente.desPausa();
                         disparaTerminoConeccao();
                         socket.disconnect();
                         finish = true;
                         break;
-                    case 3 :
+                    case 3:
                         MainCliente.getTimeCounter().newAck(comPkt.getNumber());
-                        MainCliente.decrementaTamanhoJanelaUtilizado();
                         MainCliente.desPausa();
-                        confirmacoesRecebidas++;
-                        disparaConfirmacaoRecebida();
-                        System.out.println("Confirmacao recebida");
+                        if (MainCliente.getTimeCounter().getTimeCountList().get(
+                                comPkt.getNumber()) != Long.valueOf(-1)) {
+                            confirmacoesRecebidas++;
+                            MainCliente.getSender().setTamanhoJanelaUtilizado(
+                                    MainCliente.getSender().getTamanhoJanelUtilizado()-1);
+                            disparaConfirmacaoRecebida();
+                            System.out.println(" || Confirmacao recebida - " + comPkt.getNumber());
+                        }
                         break;
-                    default :
+                    default:
                         javax.swing.JOptionPane.showMessageDialog(null, "ERRO (Receiver): "
-                    + "Pacote Recebido Desconhecido" + comPkt.getNumber() , "Error",
+                                + "Pacote Recebido Desconhecido" + comPkt.getNumber(), "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         System.out.println("Pacote Recebido Desconhecido" + comPkt.getNumber());
                 }
             }
         } catch (Exception ex) {
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ReceiverCliente.run): "
-                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+                    + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public int getConfirmacoesRecebidas(){
+    public int getConfirmacoesRecebidas() {
         return confirmacoesRecebidas;
     }
 
@@ -78,7 +82,7 @@ public class Reciever extends Thread{
         rl.terminoConeccao(event);
     }
 
-    private void disparaConfirmacaoRecebida(){
+    private void disparaConfirmacaoRecebida() {
         RecieverEvent event = new RecieverEvent(this);
 
         rl.confirmacaoRecebida(event);
