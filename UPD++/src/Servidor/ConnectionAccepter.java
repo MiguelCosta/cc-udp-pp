@@ -1,5 +1,6 @@
 package Servidor;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.TreeMap;
@@ -74,7 +75,11 @@ public class ConnectionAccepter extends Thread{
         }
     }
 
-    public synchronized void eliminaConnection(String ip){
+    public synchronized void eliminaConnection(String ip) throws IOException{
+
+        if ( getConnection(ip).getReciever() != null )
+            getConnection(ip).getReciever().setFinish();
+
         connectionList.remove(ip);
         disparaClienteDesligado();
 

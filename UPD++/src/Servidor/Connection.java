@@ -1,6 +1,5 @@
 package Servidor;
 
-import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -27,6 +26,8 @@ public class Connection{
 
             reciever.join();
             sender.join();
+
+            System.out.println("Acabou esta ligacao");
     }
 
     public static void aumentaNumConfirmacoes(int number){
