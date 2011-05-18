@@ -72,7 +72,6 @@ public class Reciever extends Thread{
                         break;
                     case 2 :
                         MainServidor.getCa().eliminaConnection(ip);
-                        finish = true;
                         break;
                     default:
                         javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ReceiverServidor.run): "

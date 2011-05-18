@@ -144,8 +144,8 @@ public class ConnectionAccepter extends Thread{
                     found = true;
         }
         
-        ds = new DatagramSocket(rand);
-        portasUtilizadas.add(rand);
+        ds = new DatagramSocket(Math.abs(rand));
+        portasUtilizadas.add(Math.abs(rand));
 
         return ds;
     }

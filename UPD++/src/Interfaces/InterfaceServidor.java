@@ -124,9 +124,8 @@ public class InterfaceServidor extends javax.swing.JDialog {
         jTextfield_TamPacotes = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -282,6 +281,15 @@ public class InterfaceServidor extends javax.swing.JDialog {
 
         jMenu1.setText("File");
 
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem2.setText("Desligar Servidor");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem1.setText("Sair");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -291,14 +299,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
         });
         jMenu1.add(jMenuItem1);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK));
-        jMenuItem2.setText("Desligar Servidor");
-        jMenu1.add(jMenuItem2);
-
         jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Servidor : ");
         jMenuBar1.add(jMenu3);
@@ -415,7 +416,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
                 ControllerServidor.confirmaPacote(ip, pacote);
             } catch (IOException ex) {
                 javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage() ,
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_jButton_ConfirmaPacoteActionPerformed
@@ -426,23 +427,42 @@ public class InterfaceServidor extends javax.swing.JDialog {
                 String ip = (String) jList_Clientes.getSelectedValue();
 
                 ControllerServidor.kickCliente(ip);
+                estadoServidorLigado();
             } catch (IOException ex) {
                 javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage() ,
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_jButton_KickActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        try {
+            ControllerServidor.desligaServidor();
+            estadoInicial();
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage() ,
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void estadoInicial(){
         jPanel_ClienteEspecifico.setVisible(false);
         jButton_Kick.setEnabled(false);
 
-        jToggleButton_ActConfirmacoes.setSelected(true);
+        jTextfield_PortaLigacoes.setEnabled(true);
+        jTextfield_TamPacotes.setEnabled(true);
+
         jMenu3.setText("Servidor : OFF");
         jMenu3.setEnabled(false);
     }
 
     private void estadoServidorLigado(){
+        jPanel_ClienteEspecifico.setVisible(false);
+        jButton_Kick.setEnabled(false);
+
+        jTextfield_PortaLigacoes.setEnabled(false);
+        jTextfield_TamPacotes.setEnabled(false);
+
         jButton_Start.setEnabled(false);
         jMenu3.setText("Servidor : ON");
     }
@@ -450,6 +470,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
     private void estadoViewCliente(String ip){
         jButton_Kick.setEnabled(true);
         jPanel_ClienteEspecifico.setVisible(true);
+        jToggleButton_ActConfirmacoes.setSelected(true);
 
         jList_Confirmados.setListData(ControllerServidor.getPacotesConfirmados(ip));
         jList_NaoConfirmados.setListData(ControllerServidor.getPacotesPorConfirmar(ip));
@@ -494,7 +515,6 @@ public class InterfaceServidor extends javax.swing.JDialog {
     private javax.swing.JList jList_Confirmados;
     private javax.swing.JList jList_NaoConfirmados;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
