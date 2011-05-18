@@ -48,6 +48,10 @@ public class Sender extends Thread{
         this.tamanhoJanela = tamanhoJanela;
         System.out.println("Tamanho janela: "+ tamanhoJanela);
     }
+    
+    public void setTamanhoJanelaUtilizado(int tamanhoJanelaUtilizado){
+        this.tamanhoJanelaUtilizado=tamanhoJanelaUtilizado;
+    }
 
     public int getTotalPackages(){
         return tamanhoJanelaUtilizado;
@@ -64,6 +68,10 @@ public class Sender extends Thread{
 
     public int getTamanhoJanela(){
         return tamanhoJanela;
+    }
+    
+    public int getTamanhoJanelUtilizado(){
+        return tamanhoJanelaUtilizado;
     }
 
     public int getTotalEnviados(){
