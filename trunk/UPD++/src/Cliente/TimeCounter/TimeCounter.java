@@ -13,6 +13,7 @@ public class TimeCounter extends Thread {
     private long devRTT;
     private float alpha, beta;
     private boolean keeprunning;
+    private int lostPackets;
 
     /*
      * Construtor
@@ -20,17 +21,14 @@ public class TimeCounter extends Thread {
      */
     public TimeCounter(int packetsNumber, Long estimatedRTT) {
         this.timeCountList = new ArrayList<Long>();
-        for (int i = 0; i < packetsNumber + 1; i++) {
+        for (int i = 0; i < packetsNumber; i++) {
             timeCountList.add(Long.valueOf(0));
         }
         this.estimatedRTT = estimatedRTT;
         this.alpha = (float) 0.125;
         this.beta = (float) 0.25;
         this.keeprunning = true;
-        System.out.println("estimated: " + this.estimatedRTT);
-        System.out.println("criou o timecounter! tamanho: " + timeCountList.size() + "" + packetsNumber);
-
-
+        this.lostPackets = 0;
     }
 
     public ArrayList getTimeCountList() {
@@ -91,20 +89,27 @@ public class TimeCounter extends Thread {
 
     @Override
     public void run() {
-        Long current, total;
+        Long current, total, time;
+        int i;
         while (keeprunning) {
-            for (long time : timeCountList) {
-                if (time != 0) {
+            for (i=0; i< timeCountList.size();i++) {
+                time=timeCountList.get(i);
+                if (time != 0 && time != -1) {
                     current = System.currentTimeMillis();
                     total = current - time;
                     if (total > timeout) {
-                        time = -1;
+                        lostPackets++;
+                        System.out.print("RTT: "+total+" || timeout: "+timeout);
+                        System.out.println(" || Pacotes perdidos: "+lostPackets);
+                        timeCountList.set(i, Long.valueOf(-1)); 
+                        System.out.println(" || TimeOut : " + i);
                         //falta disparar evento do timeout |||GOKU|||
                         if (MainCliente.getSender().getTamanhoJanela() > 1) {
                             MainCliente.getSender().setTamanhoJanelaInicial(
                                     MainCliente.getSender().getTamanhoJanela() / 2);
                             MainCliente.getSender().setTamanhoJanelaUtilizado(
                                     MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
+                            
                         }
                     }
                 }
