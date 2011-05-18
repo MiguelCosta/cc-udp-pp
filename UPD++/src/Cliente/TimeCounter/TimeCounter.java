@@ -92,7 +92,7 @@ public class TimeCounter extends Thread {
     }
 
     private void calculateTimeOut() {
-        timeout = estimatedRTT + 4 * devRTT;
+        timeout = 4 * estimatedRTT + 4 * devRTT;
         System.out.println(" || timeout: " + timeout);
     }
 
