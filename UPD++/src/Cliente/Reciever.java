@@ -31,6 +31,7 @@ public class Reciever extends Thread {
                 ComunicationPacket comPkt = (ComunicationPacket) Interpreter.bytesToObject(newPkt.getData());
                 switch (comPkt.getType()) {
                     case 1:
+                        MainCliente.getSender().setNewPort(newPkt.getPort());
                         MainCliente.firstRTT = System.currentTimeMillis() - MainCliente.firstRTT;
                         MainCliente.desPausa();
                         disparaConeccaoEstabelecida();
