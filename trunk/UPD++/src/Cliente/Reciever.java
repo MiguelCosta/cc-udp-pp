@@ -44,14 +44,11 @@ public class Reciever extends Thread {
                     case 3:
                         MainCliente.getTimeCounter().newAck(comPkt.getNumber());
                         MainCliente.desPausa();
-                        if (MainCliente.getTimeCounter().getTimeCountList().get(
-                                comPkt.getNumber()) != Long.valueOf(-1)) {
-                            confirmacoesRecebidas++;
-                            MainCliente.getSender().setTamanhoJanelaUtilizado(
-                                    MainCliente.getSender().getTamanhoJanelUtilizado()-1);
-                            disparaConfirmacaoRecebida();
-                            System.out.println(" || Confirmacao recebida - " + comPkt.getNumber());
-                        }
+
+                        confirmacoesRecebidas++;
+                        disparaConfirmacaoRecebida();
+                        System.out.println(" || Confirmacao recebida - " + comPkt.getNumber());
+
                         break;
                     default:
                         javax.swing.JOptionPane.showMessageDialog(null, "ERRO (Receiver): "
