@@ -28,6 +28,9 @@ public class TimeCounter extends Thread {
         this.beta = (float) 0.25;
         this.keeprunning = true;
         this.lostPackets = 0;
+        estimateRTT();
+        calculateDevRTT();
+        calculateTimeOut();
     }
 
     public ArrayList getTimeCountList() {
@@ -63,10 +66,10 @@ public class TimeCounter extends Thread {
             MainCliente.getSender().setTamanhoJanelaUtilizado(
                     MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
             MainCliente.getReciever().setConfirmacoesRecebidas(
-                    MainCliente.getReciever().getConfirmacoesRecebidas()+1);
-            this.estimateRTT();
-            this.calculateDevRTT();
-            this.calculateTimeOut();
+                    MainCliente.getReciever().getConfirmacoesRecebidas() + 1);
+            estimateRTT();
+            calculateDevRTT();
+            calculateTimeOut();
         }
     }
 
@@ -76,6 +79,7 @@ public class TimeCounter extends Thread {
     private void estimateRTT() {
         long newRTT = (long) ((1 - alpha) * estimatedRTT + alpha * sampleRTT);
         estimatedRTT = newRTT;
+        System.out.println(" || estimatedRTT: " + estimatedRTT);
     }
 
     /*
@@ -84,10 +88,12 @@ public class TimeCounter extends Thread {
     private void calculateDevRTT() {
         long newdevRTT = (long) ((1 - beta) * devRTT + beta * (Math.abs(sampleRTT - estimatedRTT)));
         devRTT = newdevRTT;
+        System.out.println(" || devRTT: " + devRTT);
     }
 
     private void calculateTimeOut() {
-        timeout = 4 * estimatedRTT + 4 * devRTT;
+        timeout = estimatedRTT + 4 * devRTT;
+        System.out.println(" || timeout: " + timeout);
     }
 
     @Override
@@ -104,7 +110,7 @@ public class TimeCounter extends Thread {
                         lostPackets++;
                         timeCountList.set(i, Long.valueOf(-1));
                         MainCliente.getSender().setTamanhoJanelaUtilizado(
-                                    MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
+                                MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
                         MainCliente.desPausa();
                         System.out.print("RTT: " + total + " || timeout: " + timeout);
                         System.out.println(" || Pacotes perdidos: " + lostPackets);
