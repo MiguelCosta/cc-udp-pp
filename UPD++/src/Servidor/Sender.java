@@ -106,7 +106,7 @@ public class Sender extends Thread{
 
     public synchronized void setToogle( boolean b ){
         toogle = b;
-        notifyAll();
+        desPausa();
     }
 
     public synchronized void sendConfirmacao(int i) throws IOException{
