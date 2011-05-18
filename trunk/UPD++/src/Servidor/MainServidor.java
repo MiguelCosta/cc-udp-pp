@@ -1,6 +1,7 @@
 package Servidor;
 
 import Interfaces.InterfaceServidor;
+import java.net.SocketException;
 
 public class MainServidor {
     private static ConnectionAccepter ca;
@@ -11,9 +12,12 @@ public class MainServidor {
 
     }
 
-    public static void iniciaServidor(int numConections, ConnectionAccepterListener cal,
-            int tamPacotes, RecieverListener rl, SenderListener sl){
-        ca = new ConnectionAccepter(numConections, cal, tamPacotes, rl, sl);
+    public static void iniciaServidor(int numeroMaxConnects, int tamPacotes, 
+            int portaLigacoes, ConnectionAccepterListener cal,RecieverListener rl,
+            SenderListener sl)
+            throws SocketException{
+        ca = new ConnectionAccepter(numeroMaxConnects, tamPacotes, portaLigacoes,
+                cal, rl, sl);
 
         ca.start();
     }

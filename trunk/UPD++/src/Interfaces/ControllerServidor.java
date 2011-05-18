@@ -10,6 +10,7 @@ import Servidor.SenderListener;
 import Servidor.ConnectionAccepterListener;
 import Servidor.MainServidor;
 import java.io.IOException;
+import java.net.SocketException;
 
 /**
  *
@@ -17,9 +18,9 @@ import java.io.IOException;
  */
 public class ControllerServidor {
 
-    public static void iniciaServidor(int numConections, int tamPacotes,
-            ConnectionAccepterListener cal, RecieverListener rl, SenderListener sl){
-        MainServidor.iniciaServidor(numConections, cal, tamPacotes, rl, sl);
+    public static void iniciaServidor(int numConections, int tamPacotes, int portaLigacoes,
+            ConnectionAccepterListener cal, RecieverListener rl, SenderListener sl) throws SocketException{
+        MainServidor.iniciaServidor(numConections, tamPacotes, portaLigacoes, cal, rl, sl);
     }
 
     public static void desligaServidor() throws InterruptedException{

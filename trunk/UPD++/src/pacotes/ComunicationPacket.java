@@ -11,6 +11,7 @@ public class ComunicationPacket implements Serializable{
      * 3-Confirmation
      * 4-FileName
      * 5-DataTransfer
+     * 6-EndDataTransfer
      */
     private char type; /* por questoes de optimizacao, char sao menos 3 bytes do  que int,
                          alias so eram nessessarios 3 bits */
