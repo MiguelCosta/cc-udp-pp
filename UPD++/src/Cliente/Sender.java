@@ -165,9 +165,10 @@ public class Sender extends Thread{
                 while ( tamanhoJanelaUtilizado >= tamanhoJanela ) /* esta um ciclo em vez de */
                     pausa();       /* um if, porque se receber um 1, acorda o an mesma, mas nao dec o tamanhoJanelaUtilizado*/
                 socket.send(dp);
+                
+                MainCliente.getTimeCounter().setTimeCountList(i, System.currentTimeMillis());
                 tamanhoJanelaUtilizado++;
                 numEnviados++;
-                MainCliente.getTimeCounter().setTimeCountList(i, System.currentTimeMillis());
                 disparaPacoteEnviado();
                 i++;
             }

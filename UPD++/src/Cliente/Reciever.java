@@ -42,7 +42,6 @@ public class Reciever extends Thread{
                         finish = true;
                         break;
                     case 3 :
-                        MainCliente.getTimeCounter().setTimeCountList(comPkt.getNumber(), 0);
                         MainCliente.getTimeCounter().newAck(comPkt.getNumber());
                         MainCliente.decrementaTamanhoJanelaUtilizado();
                         MainCliente.desPausa();
