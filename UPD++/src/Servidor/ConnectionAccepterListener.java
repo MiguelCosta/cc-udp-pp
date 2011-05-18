@@ -14,5 +14,6 @@ import java.util.EventListener;
 public interface ConnectionAccepterListener extends EventListener{
 
     public void clienteLigouse(ConnectionAccepterEvent e);
+    public void recebeuTerminoLigacao(ConnectionAccepterEvent e);
     
 }

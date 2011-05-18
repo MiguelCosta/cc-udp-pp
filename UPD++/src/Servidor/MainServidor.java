@@ -22,10 +22,6 @@ public class MainServidor {
         ca.join();
     }
 
-    public static Object[] getClientes(){
-        return ca.getClientes();
-    }
-
     public static ConnectionAccepter getCa(){
         return ca;
     }

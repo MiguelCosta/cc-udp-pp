@@ -10,7 +10,6 @@ import Servidor.SenderListener;
 import Servidor.ConnectionAccepterListener;
 import Servidor.MainServidor;
 import java.io.IOException;
-import java.net.InetAddress;
 
 /**
  *
@@ -28,7 +27,7 @@ public class ControllerServidor {
     }
 
     public static Object[] getClientes(){
-        return MainServidor.getClientes();
+        return MainServidor.getCa().getClientes();
     }
 
     public static int getNumPacotesRecebidos(String ip){
@@ -53,5 +52,9 @@ public class ControllerServidor {
 
     public static void confirmaPacote(String ip, int numPacote) throws IOException{
         MainServidor.getCa().getConnection(ip).getSender().sendConfirmacao(numPacote);
+    }
+
+    public static void kickCliente(String ip) throws IOException{
+        MainServidor.getCa().getConnection(ip).getSender().setFinish();
     }
 }

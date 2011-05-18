@@ -58,8 +58,8 @@ public class Reciever extends Thread{
                     case 2 :
                         //System.out.println("Termination received");
                         criaObjectoFinal();
-                        Connection.setFinish();
-                        disparaTerminoLigacao();
+                        MainServidor.getCa().getConnection(newPkt.getAddress() +
+                                " " + newPkt.getPort()).getSender().setFinish();
                         finish = true;
                         break;
                     default:
@@ -99,12 +99,6 @@ public class Reciever extends Thread{
         RecieverEvent event = new RecieverEvent(this);
 
         rl.recebeuPacote(event);
-    }
-
-    private void disparaTerminoLigacao(){
-        RecieverEvent event = new RecieverEvent(this);
-
-        rl.recebeuTerminoLigacao(event);
     }
 
     private void disparaNumTotalPacotes(){
