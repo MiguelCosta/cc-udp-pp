@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class TimeCounter extends Thread {
 
     private ArrayList<Long> timeCountList;
+    private ArrayList<Integer> timeOuts;
     private long timeout;
     private long estimatedRTT;
     private long sampleRTT;
@@ -22,8 +23,10 @@ public class TimeCounter extends Thread {
      */
     public TimeCounter(int packetsNumber, Long estimatedRTT) {
         this.timeCountList = new ArrayList<Long>();
+        this.timeOuts = new ArrayList<Integer>();
         for (int i = 0; i < packetsNumber +1; i++) {
             timeCountList.add(Long.valueOf(0));
+            timeOuts.add(0);
         }
         this.estimatedRTT = 2 * estimatedRTT;
         this.alpha = (float) 0.125;
@@ -66,7 +69,7 @@ public class TimeCounter extends Thread {
      */
     public void newAck(int index) {
         sampleRTT = System.currentTimeMillis() - timeCountList.get(index);
-        if (timeCountList.get(index) != -1) {
+        if (timeOuts.get(index) != -1) {
             timeCountList.set(index, Long.valueOf(0));
             MainCliente.getSender().setTamanhoJanelaUtilizado(
                     MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
@@ -92,7 +95,7 @@ public class TimeCounter extends Thread {
     private void estimateRTT() {
         long newRTT = (long) ((1 - alpha) * estimatedRTT + alpha * sampleRTT);
         estimatedRTT = newRTT;
-        System.out.println(" || estimatedRTT: " + estimatedRTT);
+        //System.out.println(" || estimatedRTT: " + estimatedRTT);
     }
 
     /*
@@ -101,11 +104,12 @@ public class TimeCounter extends Thread {
     private void calculateDevRTT() {
         long newdevRTT = (long) ((1 - beta) * devRTT + beta * (Math.abs(sampleRTT - estimatedRTT)));
         devRTT = newdevRTT;
-        System.out.println(" || devRTT: " + devRTT);
+        //System.out.println(" || devRTT: " + devRTT);
     }
 
     private void calculateTimeOut() {
-        timeout = estimatedRTT + 4 * devRTT;
+        timeout =  estimatedRTT + 4 * devRTT;
+        if(timeout >2000) timeout = 2000;
         System.out.println(" || timeout: " + timeout);
     }
 
@@ -116,12 +120,12 @@ public class TimeCounter extends Thread {
         while (keeprunning) {
             for (i = 0; i < timeCountList.size(); i++) {
                 time = timeCountList.get(i);
-                if (time != 0 && time != -1) {
+                if (time != 0 && timeOuts.get(i) != -1) {
                     current = System.currentTimeMillis();
                     total = current - time;
                     if (total > timeout) {
                         lostPackets++;
-                        timeCountList.set(i, Long.valueOf(-1));
+                        timeOuts.set(i, -1);
                         MainCliente.getSender().setTamanhoJanelaUtilizado(
                                 MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
                         MainCliente.desPausa();
