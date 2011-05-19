@@ -23,8 +23,6 @@ public class Sender extends Thread{
     private int tamanhoJanelaUtilizado;
     private int tamanhoJanela;
 
-    private int threshold;
-
     public Sender(DatagramSocket socket, InetAddress addr, int port, SenderListener sl)
             throws IOException, InterruptedException{
         this.socket = socket;
@@ -32,9 +30,7 @@ public class Sender extends Thread{
         this.port = port;
         pausa = false;
         this.sl = sl;
-
         tamanhoJanelaUtilizado = 0;
-        threshold=1000000000;
 
         enviaRequest();
     }
@@ -47,7 +43,7 @@ public class Sender extends Thread{
         numEnviados = -1;
     }
 
-    public void setTamanhoJanelaInicial(int tamanhoJanela){
+    public synchronized void setTamanhoJanelaInicial(int tamanhoJanela){
         this.tamanhoJanela = tamanhoJanela;
         System.out.println("Tamanho janela: "+ tamanhoJanela);
     }
