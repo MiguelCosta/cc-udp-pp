@@ -168,14 +168,14 @@ public class ConnectionAccepter extends Thread{
         System.out.println(socketLigacoes.isConnected());
     }
 
-    public synchronized void setNovoMaxClientes(int max){
+    public synchronized void setNovoMaxClientes(int max) throws IOException{
         Object[] cs = connectionList.keySet().toArray();
         if ( max > numMaxConnects || max >= cs.length )
             numMaxConnects = max;
         else if ( max < numMaxConnects && max < cs.length ) {
             int j = max;
             for ( int i = connectionList.size()-1 ; i >= 0 && j >= 0; i-- , j--)
-                connectionList.remove(cs[i]);
+                eliminaConnection((String) cs[i]);
 
             numMaxConnects = max;
         }

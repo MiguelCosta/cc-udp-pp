@@ -18,6 +18,8 @@ import Servidor.SenderEvent;
 import Servidor.SenderListener;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -458,11 +460,13 @@ public class InterfaceServidor extends javax.swing.JDialog {
 
     private void jTextField_MaxLigacoesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_MaxLigacoesKeyReleased
         if (!jTextField_MaxLigacoes.getText().equals("")){
-
-            int novoMax = Integer.parseInt(jTextField_MaxLigacoes.getText());
-
-            ControllerServidor.mudaNumMaxClientes(novoMax, !jButton_Start.isEnabled());
-
+            try {
+                int novoMax = Integer.parseInt(jTextField_MaxLigacoes.getText());
+                ControllerServidor.mudaNumMaxClientes(novoMax, !jButton_Start.isEnabled());
+            } catch (IOException ex) {
+                javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage() ,
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_jTextField_MaxLigacoesKeyReleased
 

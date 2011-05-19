@@ -84,8 +84,6 @@ public class TimeCounter extends Thread {
                 ackCounter=0;
             }
         }
-        else
-            System.out.println("||| Pacote Atrasado: "+index+" | rtt: "+ sampleRTT);
         estimateRTT();
         calculateDevRTT();
         calculateTimeOut();
@@ -97,7 +95,6 @@ public class TimeCounter extends Thread {
     private void estimateRTT() {
         long newRTT = (long) ((1 - alpha) * estimatedRTT + alpha * sampleRTT);
         estimatedRTT = newRTT;
-        //System.out.println(" || estimatedRTT: " + estimatedRTT);
     }
 
     /*
@@ -106,13 +103,11 @@ public class TimeCounter extends Thread {
     private void calculateDevRTT() {
         long newdevRTT = (long) ((1 - beta) * devRTT + beta * (Math.abs(sampleRTT - estimatedRTT)));
         devRTT = newdevRTT;
-        //System.out.println(" || devRTT: " + devRTT);
     }
 
     private void calculateTimeOut() {
         timeout = estimatedRTT + 4 * devRTT;
         if(timeout >2000) timeout = 2000;
-        System.out.println(" || timeout: " + timeout);
     }
 
     @Override
@@ -133,15 +128,12 @@ public class TimeCounter extends Thread {
                         MainCliente.desPausa();
                         threshold=MainCliente.getSender().getTamanhoJanela()/2;
                         ackCounter=0;
-                        System.out.print("***\nTIMEOUT OCURRED!!!\nRTT: " + total + " || timeout: " + timeout);
-                        System.out.println(" || Pacotes perdidos: " + lostPackets);
-                        System.out.println(" || TimeOut : " + i);
-                        System.out.println(" || Tamanho janela utilizado :" + MainCliente.getSender().getTamanhoJanelUtilizado()+"\n***");
-                        //falta disparar evento do timeout |||GOKU|||
+
                         if (MainCliente.getSender().getTamanhoJanela() > 1) {
                             MainCliente.getSender().setTamanhoJanelaInicial(
                                     MainCliente.getSender().getTamanhoJanela() / 2);
                         }
+                        MainCliente.getReciever().adicionaPerda(i);
                     }
                 }
             }
