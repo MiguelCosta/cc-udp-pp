@@ -16,6 +16,6 @@ public interface SenderListener extends EventListener{
     public void pacotesGerados(SenderEvent e);
     public void pacotesEnviados(SenderEvent e);
     public void pacoteEnviado(SenderEvent e);
-    //public void mudouTamanhoJanela(SenderEvent e);
+    public void mudouTamanhoJanela(SenderEvent e);
 
 }

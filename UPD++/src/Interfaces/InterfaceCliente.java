@@ -57,6 +57,10 @@ public class InterfaceCliente extends javax.swing.JDialog{
                 jLabel_ConfirmacoesRecebidas.setText("" + ControllerCliente.getConfirmacoes());
             }
 
+            public void perda(RecieverEvent e) {
+                jLabel_Perdas.setText(""+ControllerCliente.getNumPerdas());
+            }
+
         };
 
         sl = new SenderListener() {
@@ -69,12 +73,16 @@ public class InterfaceCliente extends javax.swing.JDialog{
             }
 
             public void pacotesEnviados(SenderEvent e) {
-                        //javax.swing.JOptionPane.showMessageDialog(null, "Info : "
-                    //+ "Os pacotes foram todos enviados" , "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        javax.swing.JOptionPane.showMessageDialog(null, "Info : "
+                    + "Os pacotes foram todos enviados" , "INFO", JOptionPane.INFORMATION_MESSAGE);
             }
 
             public void pacoteEnviado(SenderEvent e) {
                 jLabel_TotalEnviados.setText("" + ControllerCliente.getTotalEnviados());
+            }
+
+            public void mudouTamanhoJanela(SenderEvent e) {
+                jLabel_TamJanela.setText("" + ControllerCliente.getTamanhoJanela());
             }
         };
     }

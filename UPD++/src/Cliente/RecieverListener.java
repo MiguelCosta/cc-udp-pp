@@ -16,5 +16,6 @@ public interface RecieverListener extends EventListener{
     public void coneccaoEstabelecida(RecieverEvent e);
     public void terminoConeccao(RecieverEvent e);
     public void confirmacaoRecebida(RecieverEvent e);
+    public void perda(RecieverEvent e);
 
 }

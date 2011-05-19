@@ -2,6 +2,7 @@ package Cliente;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import pacotes.ComunicationPacket;
 import pacotes.Interpreter;
@@ -12,12 +13,23 @@ public class Reciever extends Thread {
     private boolean finish;
     private RecieverListener rl;
     private int confirmacoesRecebidas;
+    private ArrayList perdas;
 
     public Reciever(DatagramSocket socket, RecieverListener rl) {
         this.socket = socket;
         finish = false;
         this.rl = rl;
         confirmacoesRecebidas = 0;
+        perdas = new ArrayList();
+    }
+
+    public ArrayList getPerdas(){
+        return perdas;
+    }
+
+    public void adicionaPerda(int i){
+        perdas.add(i);
+        disparaPerda();
     }
 
     @Override
@@ -53,7 +65,6 @@ public class Reciever extends Thread {
                         javax.swing.JOptionPane.showMessageDialog(null, "ERRO (Receiver): "
                                 + "Pacote Recebido Desconhecido" + comPkt.getNumber(), "Error",
                                 JOptionPane.ERROR_MESSAGE);
-                        System.out.println("Pacote Recebido Desconhecido" + comPkt.getNumber());
                 }
             }
         } catch (Exception ex) {
@@ -85,5 +96,11 @@ public class Reciever extends Thread {
         RecieverEvent event = new RecieverEvent(this);
 
         rl.confirmacaoRecebida(event);
+    }
+
+    private void disparaPerda(){
+        RecieverEvent event = new RecieverEvent(this);
+
+        rl.perda(event);
     }
 }

@@ -59,7 +59,7 @@ public class ControllerServidor {
         MainServidor.getCa().eliminaConnection(ip);
     }
 
-    public static void mudaNumMaxClientes(int novoMax, boolean iniciado){
+    public static void mudaNumMaxClientes(int novoMax, boolean iniciado) throws IOException{
         if ( iniciado )
             MainServidor.getCa().setNovoMaxClientes(novoMax);
     }

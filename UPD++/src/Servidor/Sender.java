@@ -63,9 +63,8 @@ public class Sender extends Thread{
         socket.send(package1);
     }
 
-    private synchronized void sendConfirmacoes() throws InterruptedException{
+    private synchronized void sendConfirmacoes() throws InterruptedException, IOException{
         finish = false;
-        try {
             while(!finish){
                 while ((confirmacoes.isEmpty() && !finish) || !toogle )
                     pausa();
@@ -75,16 +74,12 @@ public class Sender extends Thread{
                     DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);
 
                     socket.send(package1);
-                    System.out.println("confirmacao enviada");
 
                     confirmados.add(confirmacoes.get(0));
                     disparaSendConfirmacao();
                     confirmacoes.remove(0);
                 }
             }
-        } catch (IOException ex) {
-            System.out.println("ERRO (senderServidor.sendConfirmacoes): " + ex.getMessage());
-        }
     }
 
     public synchronized void sendConfirmacao(int i) throws IOException{

@@ -49,7 +49,6 @@ public class Reciever extends Thread{
 
                 switch (comPkt.getType()){
                     case 5 :
-                        System.out.println("Package received");
                         MainServidor.getCa().getConnection(ip).getSender().
                                 aumentaNumConfirmacoes(comPkt.getNumber());
                         adicionaAoObjecto(comPkt.getNumber(),comPkt.getData());
@@ -62,7 +61,6 @@ public class Reciever extends Thread{
                         disparaNumTotalPacotes();
                         break;
                     case 6 :
-                        System.out.println("Package received");
                         MainServidor.getCa().getConnection(ip).getSender().
                                 aumentaNumConfirmacoes(comPkt.getNumber());
                         adicionaAoObjecto(comPkt.getNumber(),comPkt.getData());
@@ -78,7 +76,6 @@ public class Reciever extends Thread{
                     + "Pacote Desconhecido" , "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            System.out.println("Reciever Acabado!");
         } catch (Exception ex) {
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ReceiverServidor.run): "
                     + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);

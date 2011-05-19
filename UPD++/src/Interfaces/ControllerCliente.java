@@ -62,4 +62,16 @@ public class ControllerCliente {
     public static int getTotalEnviados(){
         return MainCliente.getSender().getTotalEnviados();
     }
+
+    public static int getTamanhoJanela(){
+        return MainCliente.getSender().getTamanhoJanela();
+    }
+
+    public static int getNumPerdas(){
+        return MainCliente.getReciever().getPerdas().size();
+    }
+
+    public static Object[] getPerdas(){
+        return MainCliente.getReciever().getPerdas().toArray();
+    }
 }
