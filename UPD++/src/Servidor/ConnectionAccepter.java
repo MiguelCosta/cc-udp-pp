@@ -26,6 +26,8 @@ public class ConnectionAccepter extends Thread{
 
     private TreeMap connectionList;
     private ArrayList portasUtilizadas;
+
+    private boolean finish;
     
     public ConnectionAccepter(int numeroMaxConnects, int tamPacotes, int portaLigacoes,
             ConnectionAccepterListener cal,RecieverListener rl, SenderListener sl)
@@ -43,12 +45,14 @@ public class ConnectionAccepter extends Thread{
         connectionList = new TreeMap<String,Connection>();
         portasUtilizadas = new ArrayList<Integer>();
         portasUtilizadas.add(portaLigacoes);
+
+        finish = false;
     }
 
     @Override
     public void run(){
         try {
-            while(true){
+            while(!finish){
                 byte[] buffer = new byte[tamPacotes];
                 DatagramPacket pedido = new DatagramPacket(buffer, buffer.length);
                 socketLigacoes.receive(pedido);
@@ -89,7 +93,7 @@ public class ConnectionAccepter extends Thread{
                         javax.swing.JOptionPane.showMessageDialog(null, "Pacote "
                                 + "Recebido no lugar Errado", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } 
+            }
         } catch (Exception ex) {
             System.out.println("Erro ConnectionAccepterRun : " + ex.getMessage());
             javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ConnectionAccepterRun): "
@@ -157,4 +161,11 @@ public class ConnectionAccepter extends Thread{
 
         socketLigacoes.send(package1);
     }
+
+    public void setFinish(){
+        stop();
+        socketLigacoes.close();
+        System.out.println(socketLigacoes.isConnected());
+    }
+
 }
