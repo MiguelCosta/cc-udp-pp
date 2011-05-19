@@ -46,7 +46,7 @@ public class Reciever extends Thread {
                         MainCliente.getTimeCounter().newAck(comPkt.getNumber());
                         MainCliente.desPausa();
                         disparaConfirmacaoRecebida();
-                        System.out.println(" || Confirmacao recebida - " + comPkt.getNumber());
+                        //System.out.println(" || Confirmacao recebida - " + comPkt.getNumber());
 
                         break;
                     default:

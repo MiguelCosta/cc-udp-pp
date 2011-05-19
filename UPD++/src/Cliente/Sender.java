@@ -45,7 +45,7 @@ public class Sender extends Thread{
 
     public synchronized void setTamanhoJanelaInicial(int tamanhoJanela){
         this.tamanhoJanela = tamanhoJanela;
-        System.out.println("Tamanho janela: "+ tamanhoJanela);
+        //System.out.println("Tamanho janela: "+ tamanhoJanela);
     }
     
     public void setTamanhoJanelaUtilizado(int tamanhoJanelaUtilizado){
@@ -110,7 +110,7 @@ public class Sender extends Thread{
     private void criaPacotes(String toSend, int lengthPacotes) throws IOException{
 
         byte[] objecto = Interpreter.filetoBytes(toSend);
-        System.out.println("Cria Pacotes - objecto bytes : " + objecto.length);
+        //System.out.println("Cria Pacotes - objecto bytes : " + objecto.length);
 
         byte[] buffer = new byte[lengthPacotes-104]; 
         int j = 0, number = 0;
@@ -174,7 +174,7 @@ public class Sender extends Thread{
 
     private synchronized void enviaPacotes() throws IOException, InterruptedException{
         MainCliente.initTimeCounter();
-        System.out.println("Num Pacotes: " + (pacotesEnviar.size()-1));
+        //System.out.println("Num Pacotes: " + (pacotesEnviar.size()-1));
             int i=0;
             for (DatagramPacket dp : pacotesEnviar){
                 while ( tamanhoJanelaUtilizado >= tamanhoJanela ) /* esta um ciclo em vez de */
@@ -186,7 +186,7 @@ public class Sender extends Thread{
                 numEnviados++;
                 disparaPacoteEnviado();
                 i++;
-                System.out.println(" || Enviado : " + i + " || Tamanho janela utilizado :" + tamanhoJanelaUtilizado);
+                //System.out.println(" || Enviado : " + i + " || Tamanho janela utilizado :" + tamanhoJanelaUtilizado);
             }
 
         disparaPacotesEnviados();
