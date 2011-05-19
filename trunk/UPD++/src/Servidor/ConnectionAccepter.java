@@ -64,7 +64,7 @@ public class ConnectionAccepter extends Thread{
                 /* Verificar se o pacote recebido é de pedido de ligação */
                 switch (comPkt.getType()){
                     case 1 :
-                        if ( connectionList.size() > numMaxConnects ){
+                        if ( connectionList.size() >= numMaxConnects ){
                             enviaNotAccepted(pedido.getAddress(),pedido.getPort());
                         } else {
 
@@ -166,6 +166,21 @@ public class ConnectionAccepter extends Thread{
         stop();
         socketLigacoes.close();
         System.out.println(socketLigacoes.isConnected());
+    }
+
+    public synchronized void setNovoMaxClientes(int max){
+        Object[] cs = connectionList.keySet().toArray();
+        if ( max > numMaxConnects || max >= cs.length )
+            numMaxConnects = max;
+        else if ( max < numMaxConnects && max < cs.length ) {
+            int j = max;
+            for ( int i = connectionList.size()-1 ; i >= 0 && j >= 0; i-- , j--)
+                connectionList.remove(cs[i]);
+
+            numMaxConnects = max;
+        }
+
+        disparaClienteDesligado();
     }
 
 }

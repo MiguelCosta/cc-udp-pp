@@ -10,6 +10,7 @@ public class MainServidor {
     public static void main(String[] args) {
 
         InterfaceServidor.main();
+        ca = null;
 
     }
 

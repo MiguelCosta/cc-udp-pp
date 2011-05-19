@@ -146,6 +146,17 @@ public class InterfaceServidor extends javax.swing.JDialog {
         jLabel2.setText("Máximo de Ligações:");
 
         jTextField_MaxLigacoes.setText("8");
+        jTextField_MaxLigacoes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField_MaxLigacoesKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField_MaxLigacoesKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField_MaxLigacoesKeyTyped(evt);
+            }
+        });
 
         jPanel_ClienteEspecifico.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -444,6 +455,24 @@ public class InterfaceServidor extends javax.swing.JDialog {
                         "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jTextField_MaxLigacoesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_MaxLigacoesKeyReleased
+        if (!jTextField_MaxLigacoes.getText().equals("")){
+
+            int novoMax = Integer.parseInt(jTextField_MaxLigacoes.getText());
+
+            ControllerServidor.mudaNumMaxClientes(novoMax, !jButton_Start.isEnabled());
+
+        }
+    }//GEN-LAST:event_jTextField_MaxLigacoesKeyReleased
+
+    private void jTextField_MaxLigacoesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_MaxLigacoesKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_MaxLigacoesKeyPressed
+
+    private void jTextField_MaxLigacoesKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_MaxLigacoesKeyTyped
+        
+    }//GEN-LAST:event_jTextField_MaxLigacoesKeyTyped
 
     private void estadoInicial(){
         jPanel_ClienteEspecifico.setVisible(false);
