@@ -451,6 +451,7 @@ public class InterfaceServidor extends javax.swing.JDialog {
 
         jTextfield_PortaLigacoes.setEnabled(true);
         jTextfield_TamPacotes.setEnabled(true);
+        jButton_Start.setEnabled(true);
 
         jMenu3.setText("Servidor : OFF");
         jMenu3.setEnabled(false);

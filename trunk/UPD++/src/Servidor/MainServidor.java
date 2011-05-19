@@ -27,7 +27,8 @@ public class MainServidor {
         for ( Object s : ca.getClientes())
             ca.eliminaConnection((String) s);
 
-        ca.stop();
+        ca.setFinish();
+        System.out.println(ca.isAlive());
     }
 
     public static ConnectionAccepter getCa(){
