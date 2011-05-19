@@ -84,6 +84,8 @@ public class TimeCounter extends Thread {
                 ackCounter=0;
             }
         }
+        else
+            System.out.println("||| Pacote Atrasado: "+index+" | rtt: "+ sampleRTT);
         estimateRTT();
         calculateDevRTT();
         calculateTimeOut();
@@ -108,7 +110,7 @@ public class TimeCounter extends Thread {
     }
 
     private void calculateTimeOut() {
-        timeout =  estimatedRTT + 4 * devRTT;
+        timeout = estimatedRTT + 4 * devRTT;
         if(timeout >2000) timeout = 2000;
         System.out.println(" || timeout: " + timeout);
     }
