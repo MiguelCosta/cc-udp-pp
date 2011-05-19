@@ -212,6 +212,11 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="8"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField_MaxLigacoesKeyPressed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField_MaxLigacoesKeyReleased"/>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField_MaxLigacoesKeyTyped"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel_ClienteEspecifico">
           <Properties>

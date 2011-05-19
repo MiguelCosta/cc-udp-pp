@@ -58,4 +58,9 @@ public class ControllerServidor {
     public static void kickCliente(String ip) throws IOException{
         MainServidor.getCa().eliminaConnection(ip);
     }
+
+    public static void mudaNumMaxClientes(int novoMax, boolean iniciado){
+        if ( iniciado )
+            MainServidor.getCa().setNovoMaxClientes(novoMax);
+    }
 }
