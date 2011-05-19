@@ -15,6 +15,9 @@ import Cliente.RecieverEvent;
 import Cliente.RecieverListener;
 import Cliente.SenderEvent;
 import Cliente.SenderListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -75,6 +78,7 @@ public class InterfaceCliente extends javax.swing.JDialog{
             public void pacotesEnviados(SenderEvent e) {
                         javax.swing.JOptionPane.showMessageDialog(null, "Info : "
                     + "Os pacotes foram todos enviados" , "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        jButton_Finish.setEnabled(true);
             }
 
             public void pacoteEnviado(SenderEvent e) {
@@ -119,7 +123,6 @@ public class InterfaceCliente extends javax.swing.JDialog{
         jLabel6 = new javax.swing.JLabel();
         jLabel_TotalPacotes = new javax.swing.JLabel();
         jLabel_ConfirmacoesRecebidas = new javax.swing.JLabel();
-        jButton_Pause = new javax.swing.JButton();
         jButton_Stop = new javax.swing.JButton();
         jLabel_TotalEnviados = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -130,6 +133,7 @@ public class InterfaceCliente extends javax.swing.JDialog{
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel_TamJanela = new javax.swing.JLabel();
+        jButton_Finish = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -164,17 +168,17 @@ public class InterfaceCliente extends javax.swing.JDialog{
             jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_FICHLayout.createSequentialGroup()
                 .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField_FichEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton_FileChooser)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField_TamanhoPacotes, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addContainerGap())
-            .addGroup(jPanel_FICHLayout.createSequentialGroup()
-                .addComponent(jButton_GerarPacotes)
+                    .addGroup(jPanel_FICHLayout.createSequentialGroup()
+                        .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jTextField_FichEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_FileChooser)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel_FICHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField_TamanhoPacotes, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)))
+                    .addComponent(jButton_GerarPacotes))
                 .addContainerGap())
         );
         jPanel_FICHLayout.setVerticalGroup(
@@ -278,13 +282,6 @@ public class InterfaceCliente extends javax.swing.JDialog{
 
         jLabel_ConfirmacoesRecebidas.setText("0");
 
-        jButton_Pause.setText("Pause");
-        jButton_Pause.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_PauseActionPerformed(evt);
-            }
-        });
-
         jButton_Stop.setText("Stop");
         jButton_Stop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -296,7 +293,12 @@ public class InterfaceCliente extends javax.swing.JDialog{
 
         jLabel10.setText("Total Enviados:");
 
-        jComboBox_Pacotes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Todos", "Enviados", "Perdidos" }));
+        jComboBox_Pacotes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Todos", "Perdidos" }));
+        jComboBox_Pacotes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox_PacotesActionPerformed(evt);
+            }
+        });
 
         jLabel11.setText("Tam. Janela Inicial (8 defeito):");
 
@@ -310,6 +312,13 @@ public class InterfaceCliente extends javax.swing.JDialog{
 
         jLabel_TamJanela.setText("0");
 
+        jButton_Finish.setText("Finish");
+        jButton_Finish.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_FinishActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel_PacotesLayout = new javax.swing.GroupLayout(jPanel_Pacotes);
         jPanel_Pacotes.setLayout(jPanel_PacotesLayout);
         jPanel_PacotesLayout.setHorizontalGroup(
@@ -317,30 +326,30 @@ public class InterfaceCliente extends javax.swing.JDialog{
             .addGroup(jPanel_PacotesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox_Pacotes, 0, 250, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                    .addComponent(jComboBox_Pacotes, 0, 247, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_PacotesLayout.createSequentialGroup()
+                    .addGroup(jPanel_PacotesLayout.createSequentialGroup()
                         .addComponent(jButton_Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                        .addComponent(jButton_Pause, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
-                        .addComponent(jButton_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(56, 56, 56)
+                        .addComponent(jButton_Stop, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                        .addComponent(jButton_Finish, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel5)
                     .addGroup(jPanel_PacotesLayout.createSequentialGroup()
                         .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jTextField_TamJanela, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel_TotalPacotes, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(jLabel_TotalPacotes, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_TotalEnviados, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(jLabel_TotalEnviados, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_ConfirmacoesRecebidas, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(jLabel_ConfirmacoesRecebidas, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_Perdas, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                    .addComponent(jLabel_Perdas, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                     .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_TamJanela, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE))
+                    .addComponent(jLabel_TamJanela, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel_PacotesLayout.setVerticalGroup(
@@ -375,11 +384,11 @@ public class InterfaceCliente extends javax.swing.JDialog{
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton_Stop)
-                        .addComponent(jButton_Pause))
                     .addComponent(jComboBox_Pacotes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_Enviar))
+                    .addGroup(jPanel_PacotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton_Enviar)
+                        .addComponent(jButton_Stop)
+                        .addComponent(jButton_Finish)))
                 .addContainerGap())
         );
 
@@ -477,25 +486,28 @@ public class InterfaceCliente extends javax.swing.JDialog{
         }
     }//GEN-LAST:event_jButton_EnviarActionPerformed
 
-    private void jButton_PauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PauseActionPerformed
-        try {
-            if (!pausado){
-                pausado = true;
-                ControllerCliente.pausaSender();
-                jButton_Pause.setText("Continue");
-            } else{
-                ControllerCliente.despausaSender();
-                jButton_Pause.setText("Pause");
-            }
-        } catch (InterruptedException ex) {
-            javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
-                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jButton_PauseActionPerformed
-
     private void jButton_StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_StopActionPerformed
         ControllerCliente.stopSender();
     }//GEN-LAST:event_jButton_StopActionPerformed
+
+    private void jComboBox_PacotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_PacotesActionPerformed
+        int selected = jComboBox_Pacotes.getSelectedIndex();
+
+        if ( selected == 1 )
+            jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
+        else 
+            jList_Pacotes.setListData(ControllerCliente.getPerdas());
+    }//GEN-LAST:event_jComboBox_PacotesActionPerformed
+
+    private void jButton_FinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_FinishActionPerformed
+        try {
+            ControllerCliente.closeConnection();
+            estadoInicial();
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(null, "ERRO : "
+                    + ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton_FinishActionPerformed
 
     private void estadoInicial(){
         jTextField_IP.setText("192.168.10.8");
@@ -524,7 +536,7 @@ public class InterfaceCliente extends javax.swing.JDialog{
         jTabbedPane.setEnabledAt(1, true);
         jTabbedPane.setSelectedIndex(1);
 
-        jButton_Pause.setEnabled(false);
+        jButton_Finish.setEnabled(false);
         jButton_Stop.setEnabled(false);
     }
 
@@ -537,7 +549,6 @@ public class InterfaceCliente extends javax.swing.JDialog{
         jTextField_TamanhoPacotes.setEnabled(false);
         jButton_GerarPacotes.setEnabled(false);
 
-        jButton_Pause.setEnabled(true);
         jButton_Stop.setEnabled(true);
     }
 
@@ -561,9 +572,9 @@ public class InterfaceCliente extends javax.swing.JDialog{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Enviar;
     private javax.swing.JButton jButton_FileChooser;
+    private javax.swing.JButton jButton_Finish;
     private javax.swing.JButton jButton_GerarPacotes;
     private javax.swing.JButton jButton_Ligar;
-    private javax.swing.JButton jButton_Pause;
     private javax.swing.JButton jButton_Stop;
     private javax.swing.JComboBox jComboBox_Pacotes;
     private javax.swing.JLabel jLabel1;

@@ -291,17 +291,17 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jComboBox_Pacotes" pref="250" max="32767" attributes="1"/>
-                          <Component id="jScrollPane1" alignment="0" pref="250" max="32767" attributes="1"/>
+                          <Component id="jComboBox_Pacotes" pref="247" max="32767" attributes="1"/>
+                          <Component id="jScrollPane1" alignment="0" pref="247" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="1">
+                          <Group type="102" alignment="0" attributes="0">
                               <Component id="jButton_Enviar" min="-2" pref="90" max="-2" attributes="0"/>
-                              <EmptySpace pref="33" max="32767" attributes="0"/>
-                              <Component id="jButton_Pause" min="-2" pref="104" max="-2" attributes="1"/>
-                              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
                               <Component id="jButton_Stop" min="-2" pref="68" max="-2" attributes="1"/>
+                              <EmptySpace pref="47" max="32767" attributes="0"/>
+                              <Component id="jButton_Finish" min="-2" pref="76" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="1"/>
                           <Group type="102" alignment="0" attributes="0">
@@ -309,15 +309,15 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jTextField_TamJanela" min="-2" pref="86" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jLabel_TotalPacotes" alignment="0" pref="334" max="32767" attributes="1"/>
+                          <Component id="jLabel_TotalPacotes" alignment="0" pref="337" max="32767" attributes="1"/>
                           <Component id="jLabel10" alignment="0" min="-2" pref="274" max="-2" attributes="1"/>
-                          <Component id="jLabel_TotalEnviados" alignment="0" pref="334" max="32767" attributes="1"/>
+                          <Component id="jLabel_TotalEnviados" alignment="0" pref="337" max="32767" attributes="1"/>
                           <Component id="jLabel6" alignment="0" min="-2" pref="293" max="-2" attributes="1"/>
-                          <Component id="jLabel_ConfirmacoesRecebidas" alignment="0" pref="334" max="32767" attributes="1"/>
+                          <Component id="jLabel_ConfirmacoesRecebidas" alignment="0" pref="337" max="32767" attributes="1"/>
                           <Component id="jLabel13" alignment="0" min="-2" pref="262" max="-2" attributes="1"/>
-                          <Component id="jLabel_Perdas" alignment="0" pref="334" max="32767" attributes="1"/>
+                          <Component id="jLabel_Perdas" alignment="0" pref="337" max="32767" attributes="1"/>
                           <Component id="jLabel14" alignment="0" min="-2" pref="254" max="-2" attributes="1"/>
-                          <Component id="jLabel_TamJanela" alignment="0" pref="334" max="32767" attributes="1"/>
+                          <Component id="jLabel_TamJanela" alignment="0" pref="337" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -358,12 +358,12 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                              <Component id="jButton_Stop" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jButton_Pause" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
                           <Component id="jComboBox_Pacotes" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton_Enviar" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jButton_Enviar" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButton_Stop" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButton_Finish" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -415,14 +415,6 @@
                 <Property name="text" type="java.lang.String" value="0"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton_Pause">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Pause"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_PauseActionPerformed"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JButton" name="jButton_Stop">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Stop"/>
@@ -444,13 +436,15 @@
             <Component class="javax.swing.JComboBox" name="jComboBox_Pacotes">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="3">
+                  <StringArray count="2">
                     <StringItem index="0" value="Todos"/>
-                    <StringItem index="1" value="Enviados"/>
-                    <StringItem index="2" value="Perdidos"/>
+                    <StringItem index="1" value="Perdidos"/>
                   </StringArray>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox_PacotesActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel11">
               <Properties>
@@ -481,6 +475,14 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="0"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton_Finish">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Finish"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_FinishActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

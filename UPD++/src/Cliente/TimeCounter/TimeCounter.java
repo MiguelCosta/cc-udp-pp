@@ -71,8 +71,7 @@ public class TimeCounter extends Thread {
         sampleRTT = System.currentTimeMillis() - timeCountList.get(index);
         if (timeOuts.get(index) != -1) {
             timeCountList.set(index, Long.valueOf(0));
-            MainCliente.getSender().setTamanhoJanelaUtilizado(
-                    MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
+            MainCliente.getSender().decrementaTamanhoJanelaUtilizado();
             MainCliente.getReciever().setConfirmacoesRecebidas(
                     MainCliente.getReciever().getConfirmacoesRecebidas() + 1);
             ackCounter++;

@@ -61,9 +61,9 @@ public class MainCliente {
     }
 
     public static void closeSender() throws IOException, InterruptedException{
+        s.enviaTermination();
         r.join();
         s.join();
-        s.enviaTermination();
         t.stoprunning();
 
         socket.close();
