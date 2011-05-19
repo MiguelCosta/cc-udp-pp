@@ -175,7 +175,7 @@ public class Sender extends Thread{
         MainCliente.initTimeCounter();
             int i=0;
             for (DatagramPacket dp : pacotesEnviar){
-                while ( tamanhoJanelaUtilizado >= tamanhoJanela ) /* esta um ciclo em vez de */
+                while ( tamanhoJanelaUtilizado > tamanhoJanela ) /* esta um ciclo em vez de */
                     pausa();       /* um if, porque se receber um 1, acorda o an mesma, mas nao dec o tamanhoJanelaUtilizado*/
                 socket.send(dp);
                 
