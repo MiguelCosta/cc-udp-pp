@@ -106,7 +106,6 @@ public class TimeCounter extends Thread {
 
     private void calculateTimeOut() {
         timeout = estimatedRTT + 4 * devRTT;
-        if(timeout >2000) timeout = 2000;
     }
 
     @Override
