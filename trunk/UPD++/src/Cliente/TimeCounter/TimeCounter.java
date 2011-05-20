@@ -24,7 +24,7 @@ public class TimeCounter extends Thread {
     public TimeCounter(int packetsNumber, Long estimatedRTT) {
         this.timeCountList = new ArrayList<Long>();
         this.timeOuts = new ArrayList<Integer>();
-        for (int i = 0; i < packetsNumber +1; i++) {
+        for (int i = 0; i < packetsNumber + 1; i++) {
             timeCountList.add(Long.valueOf(0));
             timeOuts.add(0);
         }
@@ -33,8 +33,8 @@ public class TimeCounter extends Thread {
         this.beta = (float) 0.25;
         this.keeprunning = true;
         this.lostPackets = 0;
-        threshold=0;
-        ackCounter=0;
+        threshold = 0;
+        ackCounter = 0;
         estimateRTT();
         calculateDevRTT();
         calculateTimeOut();
@@ -75,12 +75,13 @@ public class TimeCounter extends Thread {
             MainCliente.getReciever().setConfirmacoesRecebidas(
                     MainCliente.getReciever().getConfirmacoesRecebidas() + 1);
             ackCounter++;
-            if(ackCounter==MainCliente.getSender().getTamanhoJanela()){
-                if(threshold>ackCounter || threshold==0)
-                    MainCliente.getSender().setTamanhoJanelaInicial(ackCounter*2);
-                else
-                    MainCliente.getSender().setTamanhoJanelaInicial(ackCounter+1);
-                ackCounter=0;
+            if (ackCounter >= MainCliente.getSender().getTamanhoJanela()) {
+                if (threshold > ackCounter || threshold == 0) {
+                    MainCliente.getSender().setTamanhoJanelaInicial(ackCounter * 2);
+                } else {
+                    MainCliente.getSender().setTamanhoJanelaInicial(ackCounter + 1);
+                }
+                ackCounter = 0;
             }
         }
         estimateRTT();
@@ -119,18 +120,15 @@ public class TimeCounter extends Thread {
                     current = System.currentTimeMillis();
                     total = current - time;
                     if (total > timeout) {
+                        ackCounter=0;
                         lostPackets++;
                         timeOuts.set(i, -1);
                         MainCliente.getSender().setTamanhoJanelaUtilizado(
                                 MainCliente.getSender().getTamanhoJanelUtilizado() - 1);
                         MainCliente.desPausa();
-                        threshold=MainCliente.getSender().getTamanhoJanela()/2;
-                        ackCounter=0;
-
-                        if (MainCliente.getSender().getTamanhoJanela() > 1) {
-                            MainCliente.getSender().setTamanhoJanelaInicial(
-                                    MainCliente.getSender().getTamanhoJanela() / 2);
-                        }
+                        threshold = MainCliente.getSender().getTamanhoJanela() / 2;
+                        ackCounter = 0;
+                        MainCliente.getSender().setTamanhoJanelaInicial(1);
                         MainCliente.getReciever().adicionaPerda(i);
                     }
                 }
