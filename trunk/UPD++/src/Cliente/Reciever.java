@@ -14,6 +14,7 @@ public class Reciever extends Thread {
     private RecieverListener rl;
     private int confirmacoesRecebidas;
     private ArrayList perdas;
+    private boolean terminoEnviado;
 
     public Reciever(DatagramSocket socket, RecieverListener rl) {
         this.socket = socket;
@@ -21,6 +22,7 @@ public class Reciever extends Thread {
         this.rl = rl;
         confirmacoesRecebidas = 0;
         perdas = new ArrayList();
+        terminoEnviado = false;
     }
 
     public ArrayList getPerdas(){
@@ -30,6 +32,10 @@ public class Reciever extends Thread {
     public void adicionaPerda(int i){
         perdas.add(i);
         disparaPerda();
+    }
+
+    public void setFinish(){
+        finish = true;
     }
 
     @Override
@@ -49,10 +55,14 @@ public class Reciever extends Thread {
                         disparaConeccaoEstabelecida();
                         break;
                     case 2:
-                        MainCliente.desPausa();
-                        disparaTerminoConeccao();
-                        socket.disconnect();
-                        finish = true;
+                        if (terminoEnviado){
+                            disparaTerminoConeccao();
+                            MainCliente.closeSender();
+                        } else{
+                            MainCliente.getSender().enviaTermination();
+                            disparaTerminoConeccao();
+                            MainCliente.closeSender();
+                        }
                         break;
                     case 3:
                         MainCliente.getTimeCounter().newAck(comPkt.getNumber());
@@ -84,6 +94,10 @@ public class Reciever extends Thread {
         RecieverEvent event = new RecieverEvent(this);
 
         rl.coneccaoEstabelecida(event);
+    }
+
+    public void setTerminoLigacao(){
+        terminoEnviado = true;
     }
 
     private void disparaTerminoConeccao() {

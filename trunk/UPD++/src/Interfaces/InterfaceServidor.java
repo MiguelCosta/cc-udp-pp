@@ -18,8 +18,6 @@ import Servidor.SenderEvent;
 import Servidor.SenderListener;
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -54,7 +52,19 @@ public class InterfaceServidor extends javax.swing.JDialog {
             }
 
             public void recebeuTerminoLigacao(ConnectionAccepterEvent e) {
-                jList_Clientes.setListData(ControllerServidor.getClientes());
+                Object[] c = ControllerServidor.getClientes();
+                jList_Clientes.setListData(c);
+
+                if (c.length == 0)
+                    estadoServidorLigado();
+                else{
+                    jList_Clientes.setSelectedIndex(0);
+
+                    String ip = (String) jList_Clientes.getSelectedValue();
+
+                    estadoViewCliente(ip);
+                    estadoViewCliente(ip);
+                }
             }
         };
 
@@ -440,7 +450,6 @@ public class InterfaceServidor extends javax.swing.JDialog {
                 String ip = (String) jList_Clientes.getSelectedValue();
 
                 ControllerServidor.kickCliente(ip);
-                estadoServidorLigado();
             } catch (IOException ex) {
                 javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage() ,
                         "ERROR", JOptionPane.ERROR_MESSAGE);

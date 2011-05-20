@@ -56,6 +56,7 @@ public class Sender extends Thread{
     }
 
     public void sendTerminacao() throws IOException{
+        MainServidor.getCa().getConnection(ip).getReciever().setTerminoLigacao();
         ComunicationPacket p = new ComunicationPacket((char) 2, -1, null);
         byte[] toSend = Interpreter.objectToBytes(p);
         DatagramPacket package1 = new DatagramPacket(toSend, toSend.length, addr, port);

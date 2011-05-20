@@ -56,7 +56,7 @@ public class ControllerServidor {
     }
 
     public static void kickCliente(String ip) throws IOException{
-        MainServidor.getCa().eliminaConnection(ip);
+        MainServidor.getCa().getConnection(ip).getSender().sendTerminacao();
     }
 
     public static void mudaNumMaxClientes(int novoMax, boolean iniciado) throws IOException{

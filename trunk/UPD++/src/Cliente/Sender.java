@@ -190,12 +190,15 @@ public class Sender extends Thread{
     }
 
     public synchronized void enviaTermination() throws IOException, InterruptedException{
+        MainCliente.getReciever().setTerminoLigacao();
             ComunicationPacket p1 = new ComunicationPacket((char) 2,-1, null);
             byte[] toSend1 = Interpreter.objectToBytes(p1);
             DatagramPacket package1 = new DatagramPacket(toSend1, toSend1.length,
                     addr, port);
 
             socket.send(package1);
+
+            System.out.println("terminacao enviada");
 
             //pausa(); /* Esperar que o servidor estabeleca a conexao com o cliente */
     }

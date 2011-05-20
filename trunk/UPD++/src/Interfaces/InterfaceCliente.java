@@ -15,9 +15,6 @@ import Cliente.RecieverEvent;
 import Cliente.RecieverListener;
 import Cliente.SenderEvent;
 import Cliente.SenderListener;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -49,7 +46,7 @@ public class InterfaceCliente extends javax.swing.JDialog{
                 try {
                     javax.swing.JOptionPane.showMessageDialog(null, "Info : " +
                             "Recebido Pedido de terminacao de ligação", "INFO", JOptionPane.INFORMATION_MESSAGE);
-                    ControllerCliente.closeConnection();
+                    estadoInicial();
                 } catch (Exception ex) {
                     javax.swing.JOptionPane.showMessageDialog(null, "Erro : " +
                             ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -488,12 +485,13 @@ public class InterfaceCliente extends javax.swing.JDialog{
 
     private void jButton_StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_StopActionPerformed
         ControllerCliente.stopSender();
+        estadoFicheiro();
     }//GEN-LAST:event_jButton_StopActionPerformed
 
     private void jComboBox_PacotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_PacotesActionPerformed
         int selected = jComboBox_Pacotes.getSelectedIndex();
 
-        if ( selected == 1 )
+        if ( selected == 0 )
             jList_Pacotes.setListData(ControllerCliente.getPacotesEnviar());
         else 
             jList_Pacotes.setListData(ControllerCliente.getPerdas());
@@ -513,12 +511,16 @@ public class InterfaceCliente extends javax.swing.JDialog{
         jTextField_IP.setText("192.168.10.8");
         jTextField_Porta.setText("4545");
 
+        jTabbedPane.setSelectedIndex(0);
         jTabbedPane.setEnabledAt(1, false);
         
         jTextField_FichEnviar.setEnabled(false);
         jButton_FileChooser.setEnabled(false);
         jTextField_TamanhoPacotes.setEnabled(false);
         jButton_GerarPacotes.setEnabled(false);
+        jButton_Ligar.setEnabled(true);
+        jTextField_IP.setEditable(true);
+        jTextField_Porta.setEditable(true);
     }
 
     private void estadoFicheiro(){
