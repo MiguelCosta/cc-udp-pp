@@ -20,6 +20,7 @@ public class Reciever extends Thread{
     private int numeroTotalPacotes;
     private int numeroPacotesRecebidos;
     private RecieverListener rl;
+    private boolean terminoEnviado;
 
     Reciever(DatagramSocket socket, int tamPacotes, String ip, RecieverListener rl){
         this.socket=socket;
@@ -34,6 +35,7 @@ public class Reciever extends Thread{
         
         numeroTotalPacotes = 0;
         numeroPacotesRecebidos = 0;
+        terminoEnviado= false;
     }
 
     @Override
@@ -69,7 +71,13 @@ public class Reciever extends Thread{
                         criaObjectoFinal();
                         break;
                     case 2 :
-                        MainServidor.getCa().eliminaConnection(ip);
+                        if (terminoEnviado) {
+                            System.out.println(ip);
+                            MainServidor.getCa().eliminaConnection(ip);
+                        } else {
+                            MainServidor.getCa().getConnection(ip).getSender().sendTerminacao();
+                            MainServidor.getCa().eliminaConnection(ip);
+                        }
                         break;
                     default:
                         javax.swing.JOptionPane.showMessageDialog(null, "ERRO (ReceiverServidor.run): "
@@ -126,5 +134,9 @@ public class Reciever extends Thread{
 
     public synchronized void setFinish(){
         finish = true;
+    }
+
+    public void setTerminoLigacao(){
+        terminoEnviado = true;
     }
 }

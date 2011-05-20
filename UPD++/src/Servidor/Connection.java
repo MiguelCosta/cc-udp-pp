@@ -24,8 +24,11 @@ public class Connection{
     }
 
     public void endConnection() throws IOException{
+        System.out.printf("tentar terminar");
         reciever.setFinish();
         sender.setFinish();
+
+        socket.close();
 
         System.out.printf("Coneccao Terminada");
     }
